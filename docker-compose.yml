@@ -1,0 +1,8 @@
+version: '3.4'
+
+services:
+  webhookapi:
+    image: ${DOCKER_REGISTRY}webhookapi
+    build:
+      context: .
+      dockerfile: WebhookAPI/Dockerfile
