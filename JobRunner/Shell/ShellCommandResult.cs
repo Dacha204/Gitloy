@@ -1,4 +1,4 @@
-namespace JobRunner.Shell
+namespace Gitloy.Services.JobRunner.Shell
 {
     public class ShellCommandResult
     {

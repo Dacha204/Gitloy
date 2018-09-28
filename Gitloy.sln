@@ -19,6 +19,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebPortal", "WebPortal\WebP
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JobRunner", "JobRunner\JobRunner.csproj", "{B05B6635-8F03-4463-8071-010DC8E1B8B5}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Messages", "Messages\Messages.csproj", "{43B35CC4-E979-4AFF-AD3E-6EF39B6C7C50}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -41,6 +43,10 @@ Global
 		{B05B6635-8F03-4463-8071-010DC8E1B8B5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B05B6635-8F03-4463-8071-010DC8E1B8B5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B05B6635-8F03-4463-8071-010DC8E1B8B5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{43B35CC4-E979-4AFF-AD3E-6EF39B6C7C50}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{43B35CC4-E979-4AFF-AD3E-6EF39B6C7C50}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{43B35CC4-E979-4AFF-AD3E-6EF39B6C7C50}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{43B35CC4-E979-4AFF-AD3E-6EF39B6C7C50}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -51,6 +57,7 @@ Global
 		{A2F727CE-38DB-4D8D-B1E4-B3DD8E0EDB69} = {9A35BC3F-C582-4045-8FE7-BC73675288B2}
 		{21745637-4090-4D02-80FD-250B6017191E} = {A2F727CE-38DB-4D8D-B1E4-B3DD8E0EDB69}
 		{B05B6635-8F03-4463-8071-010DC8E1B8B5} = {A2F727CE-38DB-4D8D-B1E4-B3DD8E0EDB69}
+		{43B35CC4-E979-4AFF-AD3E-6EF39B6C7C50} = {DC01EDBE-EE67-4E24-AF6D-934E41FB082B}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {3FBD522D-F8E9-4E2D-8D49-58B8282D3975}

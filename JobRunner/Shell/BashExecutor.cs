@@ -1,6 +1,6 @@
 using System.Diagnostics;
 
-namespace JobRunner.Shell
+namespace Gitloy.Services.JobRunner.Shell
 {
     public class BashExecutor : IShellExec
     {
