@@ -1,0 +1,15 @@
+{
+  "RabbitMQ": {
+    "host": "default.host",
+    "virtualHost": "default.virtual",
+    "username": "default.admin",
+    "password": "default.admin",
+    "requestedHeartbeat": 11,
+    "prefetchCount": 55,
+    "publisherConfirms": false,
+    "persistentMessages": true,
+    "product": "default.MyService",
+    "platform": "default.mashine.hostname",
+    "timeout": 11
+  }
+}

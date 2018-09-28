@@ -1,0 +1,15 @@
+{
+  "RabbitMQ": {
+    "host": "localhost",
+    "virtualHost": "/",
+    "username": "admin",
+    "password": "admin",
+    "requestedHeartbeat": 10,
+    "prefetchCount": 50,
+    "publisherConfirms": false,
+    "persistentMessages": true,
+    "product": "MyService",
+    "platform": "mashine.hostname",
+    "timeout": 10
+  }
+}

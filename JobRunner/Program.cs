@@ -1,5 +1,6 @@
 ﻿using System;
-using System.Collections.Concurrent;
+using System.IO;
+using Microsoft.Extensions.Configuration;
 
 namespace Gitloy.Services.JobRunner
 {
@@ -7,10 +8,6 @@ namespace Gitloy.Services.JobRunner
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("Hello World");
-
-            ConcurrentQueue<string> queue = new ConcurrentQueue<string>();
-            
             
         }
     }

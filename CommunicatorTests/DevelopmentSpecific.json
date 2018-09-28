@@ -1,0 +1,14 @@
+{
+  "RabbitMQ": {
+    "host": "sheep.rmq.cloudamqp.com",
+    "virtualHost": "lbcgatce",
+    "username": "lbcgatce",
+    "password": "59vPxKWGethST48Rb1VffLXPuYz1ZrPA",
+    "requestedHeartbeat": 10,
+    "prefetchCount": 50,
+    "publisherConfirms": false,
+    "persistentMessages": true,
+    "product": "JobRunner",
+    "timeout": 10
+  }
+}

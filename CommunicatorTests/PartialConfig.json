@@ -1,0 +1,9 @@
+{
+  "RabbitMQ": {
+    "host": "partial.host",
+    "virtualHost": "partial.virtual",
+    "username": "partial.admin",
+    "password": "partial.admin",
+    "timeout": 11
+  }
+}
