@@ -1,18 +1,24 @@
+using System.Net;
+using System.Runtime.Serialization;
+
 namespace Gitloy.BuildingBlocks.Messages.Data
 {
     public class FtpServer
     {
-        public string Hostname { get; private set; }
-        public int Port { get; private set; }
-        public FtpAccount UserAccount { get; private set; }
-        public string RootDirectory { get; private set; }
+        public string Hostname { get; set; }
+        public int Port { get; set; }
+        public FtpAccount UserAccount { get; set; }
+        public string RootDirectory { get; set; }
         
-        public FtpServer(string hostname, int port, FtpAccount userAccount, string rootDirectory)
+        [IgnoreDataMember]
+        public string Uri => $"ftp://{UserAccount.Username}:{UserAccount.Password}@{Hostname}/{RootDirectory}";
+        
+        public FtpServer()
         {
-            Hostname = hostname;
-            Port = port;
-            UserAccount = userAccount;
-            RootDirectory = rootDirectory;
+            Hostname = "hostname";
+            UserAccount = new FtpAccount();
+            RootDirectory = "/";
         }
+
     }
 }

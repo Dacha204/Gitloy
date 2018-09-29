@@ -4,7 +4,7 @@ namespace Gitloy.BuildingBlocks.Messages.WorkerJob
 {
     public class WorkerJobResponse
     {
-        public WorkerJobRequest Request { get; private set; }
+        public WorkerJobRequest Request { get; set; }
         public WorkerJobResultStatus ResultStatus { get; set; }
         public string ResultMessage { get; set; }
         public string JobOutput { get; set; }
@@ -13,6 +13,12 @@ namespace Gitloy.BuildingBlocks.Messages.WorkerJob
         {
             Request = request;
             ResultStatus = resultStatus;
+        }
+
+        public WorkerJobResponse()
+        {
+            ResultMessage = "Unknown";
+            JobOutput = "Unknown";
         }
     }
 }
