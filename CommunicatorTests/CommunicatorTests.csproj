@@ -21,7 +21,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <None Update="GitloyCommunicator.json">
+      <None Update="appsettings.json">
         <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       </None>
       <None Update="PartialConfig.json">
