@@ -5,19 +5,12 @@
         <TargetFramework>netcoreapp2.1</TargetFramework>
         <AssemblyName>Gitloy.Services.JobRunner</AssemblyName>
         <RootNamespace>Gitloy.Services.JobRunner</RootNamespace>
+        <LangVersion>7.1</LangVersion>
     </PropertyGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\Communicator\Communicator.csproj" />
       <ProjectReference Include="..\Messages\Messages.csproj" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <Reference Include="Microsoft.Extensions.Configuration, Version=2.1.1.0, Culture=neutral, PublicKeyToken=adb9793829ddae60">
-        <HintPath>..\..\..\..\..\usr\share\dotnet\sdk\NuGetFallbackFolder\microsoft.extensions.configuration\2.1.1\lib\netstandard2.0\Microsoft.Extensions.Configuration.dll</HintPath>
-      </Reference>
-      <Reference Include="Microsoft.Extensions.Configuration.Abstractions, Version=2.1.1.0, Culture=neutral, PublicKeyToken=adb9793829ddae60">
-        <HintPath>..\..\..\..\..\usr\share\dotnet\sdk\NuGetFallbackFolder\microsoft.extensions.configuration.abstractions\2.1.1\lib\netstandard2.0\Microsoft.Extensions.Configuration.Abstractions.dll</HintPath>
-      </Reference>
     </ItemGroup>
 
     <ItemGroup>
@@ -30,6 +23,27 @@
       <PackageReference Include="Microsoft.Extensions.Configuration.Json">
         <Version>2.1.1</Version>
       </PackageReference>
+      <PackageReference Include="Microsoft.Extensions.DependencyInjection">
+        <Version>2.1.1</Version>
+      </PackageReference>
+      <PackageReference Include="Microsoft.Extensions.Hosting">
+        <Version>2.1.1</Version>
+      </PackageReference>
+      <PackageReference Include="Microsoft.Extensions.Logging">
+        <Version>2.1.1</Version>
+      </PackageReference>
+      <PackageReference Include="Microsoft.Extensions.Logging.Console">
+        <Version>2.1.1</Version>
+      </PackageReference>
+    </ItemGroup>
+
+    <ItemGroup>
+      <None Update="appsettings.json">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
+      <None Update="Resources\runner.sh">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
     </ItemGroup>
 
 </Project>

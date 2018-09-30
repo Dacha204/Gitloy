@@ -1,9 +1,9 @@
 #!/bin/bash 
 #Exit codes
-# 1 = unknown
-# 2 = failed to create clone dir
-# 3 = failed to clone repo
-# 4 = failed to upload files
+# 2041 = unknown
+# 2042 = failed to create clone dir
+# 2043 = failed to clone repo
+# 2044 = failed to upload files
 
 function die() {
 	echo "[`date "+%Y-%m-%d %H:%M:%S"`] ERROR: "$1 1>&2
@@ -102,19 +102,19 @@ mkdir -p $CLONE_DIR
 
 
 if [[ $? -ne 0 ]]; then
-	die "Failed to create clone dir" 2
+	die "Failed to create clone dir" 2042
 fi
 
 cd $CLONE_DIR
 
 git clone $GIT_URL .
 if [[ $? -ne 0 ]]; then
-	die "Failed to clone repo" 3
+	die "Failed to clone repo" 2043
 fi
 
 git-ftp push -u $FTP_USER -p $FTP_PASS -b $GIT_BRANCH --key $SSH_PRIVATE --pubkey $SSH_PUBLIC --insecure -f -v --auto-init ftp://$FTP_HOST:$FTP_PORT$FTP_DIR
 if [[ $? -ne 0 ]]; then
-	die "Failed to upload" 4
+	die "Failed to upload" 2044
 fi
 
 info "Cleaning.."

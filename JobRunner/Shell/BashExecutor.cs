@@ -1,14 +1,17 @@
+using System;
 using System.Diagnostics;
 
 namespace Gitloy.Services.JobRunner.Shell
 {
-    public class BashExecutor : IShellExec
+    public class BashExecutor : IShellExec, IDisposable
     {
+        private Process _process { get; set; }
+        
         public ShellCommandResult Execute(string command)
         {
             var escapedArgs = command.Replace("\"", "\\\"");
 
-            var process = new Process()
+            _process = new Process()
             {
                 StartInfo = new ProcessStartInfo
                 {
@@ -19,12 +22,17 @@ namespace Gitloy.Services.JobRunner.Shell
                     CreateNoWindow = true,
                 }
             };
+            
+            _process.Start();
+            string output = _process.StandardOutput.ReadToEnd();
+            _process.WaitForExit();
 
-            process.Start();
-            string output = process.StandardOutput.ReadToEnd();
-            process.WaitForExit();
+            return new ShellCommandResult(command, _process.ExitCode, output);
+        }
 
-            return new ShellCommandResult(command, process.ExitCode, output);
+        public void Dispose()
+        {
+            _process?.Dispose();
         }
     }
 }

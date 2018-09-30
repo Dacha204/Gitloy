@@ -28,4 +28,4 @@ RUN add-apt-repository -y ppa:git-ftp/ppa && \
 RUN mkdir -p ~/.ssh/ && ssh-keyscan github.com > ~/.ssh/known_hosts
 
 #CMD exec /bin/bash -c "trap : TERM INT; sleep infinity & wait"
-ENTRYPOINT ["dotnet", "JobRunner.dll"]
+ENTRYPOINT ["dotnet", "Gitloy.Services.JobRunner.dll"]
