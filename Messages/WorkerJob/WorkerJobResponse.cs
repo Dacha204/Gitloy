@@ -1,8 +1,9 @@
+using Gitloy.BuildingBlocks.Messages.Data.Validation;
 using Gitloy.BuildingBlocks.Messages.WorkerJob.Enums;
 
 namespace Gitloy.BuildingBlocks.Messages.WorkerJob
 {
-    public class WorkerJobResponse
+    public class WorkerJobResponse : IValidate
     {
         public WorkerJobRequest Request { get; set; }
         public WorkerJobResultStatus ResultStatus { get; set; }
@@ -19,6 +20,24 @@ namespace Gitloy.BuildingBlocks.Messages.WorkerJob
         {
             ResultMessage = "Unknown";
             JobOutput = "Unknown";
+        }
+
+        public ValidationResult Validate()
+        {
+            if (Request == null)
+                return ValidationResult.Invalid($"{nameof(Request)} is null");
+
+            var requestValidation = Request.Validate();
+            if (!requestValidation.IsValid)
+                return requestValidation;
+            
+            if (ResultMessage == null)
+                return ValidationResult.Invalid($"{ResultMessage} is null");
+            
+            if (JobOutput == null)
+                return ValidationResult.Invalid($"{JobOutput} is null");
+            
+            return ValidationResult.Valid;
         }
     }
 }

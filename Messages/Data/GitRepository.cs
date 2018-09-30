@@ -1,6 +1,8 @@
+using Gitloy.BuildingBlocks.Messages.Data.Validation;
+
 namespace Gitloy.BuildingBlocks.Messages.Data
 {
-    public class GitRepository
+    public class GitRepository : IValidate
     {
         public string Url { get; set; }
         public string Branch { get; set; }
@@ -9,6 +11,17 @@ namespace Gitloy.BuildingBlocks.Messages.Data
         {
             Url = "url";
             Branch = "branch";
+        }
+
+        public ValidationResult Validate()
+        {
+            if (string.IsNullOrEmpty(Url))
+                return ValidationResult.Invalid($"{nameof(Url)} is empty");
+
+            if (string.IsNullOrEmpty(Branch))
+                return ValidationResult.Invalid($"{nameof(Branch)} is empty");
+            
+            return ValidationResult.Valid;
         }
     }
 }
