@@ -4,7 +4,7 @@ using Newtonsoft.Json;
 
 namespace Gitloy.Services.WebhookAPI.GithubPayloads
 {
-    public class PushEvent
+    public class GithubPushEvent
     {
         [JsonProperty("ref")]
         public string Ref { get; set; }

@@ -3,7 +3,7 @@ using Newtonsoft.Json;
 
 namespace Gitloy.Services.WebhookAPI.GithubPayloads
 {
-    public class PingEvent
+    public class GithubPingEvent
     {
         [JsonProperty("zen")]
         public string Zen { get; set; }

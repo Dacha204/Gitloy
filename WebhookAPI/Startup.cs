@@ -5,6 +5,12 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Gitloy.Services.Common.Communicator;
+using Gitloy.Services.WebhookAPI.BusinessLogic;
+using Gitloy.Services.WebhookAPI.BusinessLogic.Core;
+using Gitloy.Services.WebhookAPI.BusinessLogic.Core.Handlers;
+using Gitloy.Services.WebhookAPI.BusinessLogic.Persistence.EntityFrameworkCore;
+using Gitloy.Services.WebhookAPI.GithubPayloads;
+using Microsoft.EntityFrameworkCore;
 
 namespace Gitloy.Services.WebhookAPI
 {
@@ -24,10 +30,33 @@ namespace Gitloy.Services.WebhookAPI
                 .AddMvc()
                 .SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
 
-            services.AddSingleton<ICommunicator, Communicator>();
-
+            SetupBusCommunication(services);
+            SetupPersistence(services);
+            SetupBusinessLoggic(services);
         }
 
+        private void SetupBusinessLoggic(IServiceCollection services)
+        {
+            services.AddScoped<IGitEventHandler<GithubPushEvent>, PushEventHandler>();
+            services.AddScoped<IGitEventHandler<GithubPingEvent>, PingEventHandler>();
+        }
+
+        private void SetupBusCommunication(IServiceCollection services)
+        {
+            services.AddSingleton<ICommunicator, Communicator>();
+        }
+
+        private void SetupPersistence(IServiceCollection services)
+        {
+            services.AddDbContext<WebhookApiContext>(options =>
+            {
+                options.UseLazyLoadingProxies();
+                options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"));
+            });
+
+            services.AddScoped<IUnitOfWork, UnitOfWork>();
+        }
+        
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {

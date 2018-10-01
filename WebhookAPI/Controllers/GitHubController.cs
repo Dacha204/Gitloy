@@ -4,7 +4,9 @@ using Microsoft.AspNetCore.Mvc;
 using Gitloy.BuildingBlocks.Messages.Data;
 using Gitloy.BuildingBlocks.Messages.WorkerJob;
 using Gitloy.Services.Common.Communicator;
+using Gitloy.Services.WebhookAPI.BusinessLogic.Core.Handlers;
 using Gitloy.Services.WebhookAPI.GithubPayloads;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
 namespace Gitloy.Services.WebhookAPI.Controllers
@@ -15,15 +17,21 @@ namespace Gitloy.Services.WebhookAPI.Controllers
     {
         private readonly ILogger<GitHubController> _logger;
         private readonly ICommunicator _communicator;
+        private readonly IServiceProvider _serviceProvider;
 
-        public GitHubController(ILogger<GitHubController> logger, ICommunicator communicator)
+        public GitHubController(
+            ILogger<GitHubController> logger, 
+            ICommunicator communicator,
+            IServiceProvider serviceProvider
+            )
         {
             _logger = logger;
             _communicator = communicator;
+            _serviceProvider = serviceProvider;
         }
 
         [HttpPost]
-        public IActionResult Webhook()
+        public async Task<IActionResult> Webhook()
         {
             string responseMessage;
 
@@ -34,12 +42,12 @@ namespace Gitloy.Services.WebhookAPI.Controllers
                 switch (payload.Event)
                 {
                     case "push":
-                        GithubHandle((PushEvent) payload.Result);
-                        responseMessage = "Gitloy: PingEvent received.";
+                        await GithubHandle((GithubPushEvent) payload.Result);
+                        responseMessage = "Gitloy: GithubPushEvent received.";
                         break;
                     case "ping":
-                        GithubHandle((PingEvent) payload.Result);
-                        responseMessage = "Gitloy: PushEvent received.";
+                        await GithubHandle((GithubPingEvent) payload.Result);
+                        responseMessage = "Gitloy: GithubPingEvent received.";
                         break;
                     default:
                         throw new Exception();
@@ -54,39 +62,19 @@ namespace Gitloy.Services.WebhookAPI.Controllers
             return Ok(responseMessage);
         }
 
-        private Task GithubHandle(PingEvent data)
+        private Task GithubHandle(GithubPingEvent data)
         {
-            //Notice that user has setup repository correctly.
+            var handler = _serviceProvider.GetService<IGitEventHandler<GithubPingEvent>>();
+            handler.HandleAsync(data);
+            
             return Task.CompletedTask;
         }
 
-        private Task GithubHandle(PushEvent data)
+        private Task GithubHandle(GithubPushEvent data)
         {
-            var request = new WorkerJobRequest()
-            {
-                Id = 1337,
-                FtpServer = new FtpServer()
-                {
-                    UserAccount = new FtpAccount()
-                    {
-                        Username = "gitloyer",
-                        Password = "gitloypw123"
-                    },
-                    Hostname = "ftp.dacha204.com",
-                    Port = 2121,
-                    RootDirectory = "/"
-                },
-                GitRepository = new GitRepository()
-                {
-                    Branch = "master",
-                    Url = data.Repository.CloneUrl
-                },
-            };
-
-            var response = _communicator.Bus.Request<WorkerJobRequest, WorkerJobResponse>(request);
-
-            _logger.LogInformation($"Request executed: {response.ResultStatus} => {response.ResultMessage}");
-
+            var handler = _serviceProvider.GetService<IGitEventHandler<GithubPushEvent>>();
+            handler.HandleAsync(data);
+            
             return Task.CompletedTask;
         }
     }

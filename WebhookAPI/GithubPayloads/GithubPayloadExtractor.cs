@@ -14,6 +14,7 @@ namespace Gitloy.Services.WebhookAPI.GithubPayloads
             request.Headers.TryGetValue("X-GitHub-Event", out var strEvent);
             request.Headers.TryGetValue("Content-type", out var content);
             
+            // ReSharper disable once InconsistentNaming
             string PayloadText;
 
             if (content != "application/json")
@@ -36,9 +37,9 @@ namespace Gitloy.Services.WebhookAPI.GithubPayloads
             switch (@event)
             {
                 case "ping":
-                    return JsonConvert.DeserializeObject<PingEvent>(json);
+                    return JsonConvert.DeserializeObject<GithubPingEvent>(json);
                 case "push":
-                    return JsonConvert.DeserializeObject<PushEvent>(json);
+                    return JsonConvert.DeserializeObject<GithubPushEvent>(json);
 
                 default:
                     throw new NotImplementedException(
