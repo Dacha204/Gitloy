@@ -1,8 +1,11 @@
+using System;
+
 namespace Gitloy.Services.WebhookAPI.BusinessLogic.Core.Model
 {
     public class Integration
     {
         public int Id { get; set; }
+        public Guid Guid { get; set; }
         
         public string GitUrl { get; set; }
         public string GitBranch { get; set; } = "master";
@@ -12,5 +15,10 @@ namespace Gitloy.Services.WebhookAPI.BusinessLogic.Core.Model
         public string FtpHostname { get; set; }
         public int FtpPort { get; set; } = 21;
         public string FtpRootDirectory { get; set; } = "/";
+
+        public Integration()
+        {
+            Guid = Guid.NewGuid();
+        }
     }
 }

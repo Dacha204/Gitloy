@@ -1,3 +1,5 @@
+using System;
+
 namespace Gitloy.Services.WebhookAPI.BusinessLogic.Core.Model
 {
     public enum RequestStatus
@@ -16,6 +18,7 @@ namespace Gitloy.Services.WebhookAPI.BusinessLogic.Core.Model
     public class Request
     {
         public int Id { get; set; }
+        public Guid Guid { get; set; }
         public virtual Integration Integration { get; set; }
         public RequestStatus Status { get; set; }
         public RequestResultStatus ResultStatus { get; set; }
@@ -26,6 +29,7 @@ namespace Gitloy.Services.WebhookAPI.BusinessLogic.Core.Model
         {
             Status = RequestStatus.Requested;
             ResultStatus = RequestResultStatus.Pending;
+            Guid = Guid.NewGuid();
         }
     }
 }
