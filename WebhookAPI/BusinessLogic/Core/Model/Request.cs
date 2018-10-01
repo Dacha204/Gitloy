@@ -16,7 +16,7 @@ namespace Gitloy.Services.WebhookAPI.BusinessLogic.Core.Model
     public class Request
     {
         public int Id { get; set; }
-        public virtual GitRepo Git { get; set; }
+        public virtual Integration Integration { get; set; }
         public RequestStatus Status { get; set; }
         public RequestResultStatus ResultStatus { get; set; }
         public string ResultMessage { get; set; }

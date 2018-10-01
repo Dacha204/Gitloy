@@ -4,15 +4,17 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Gitloy.Services.WebhookAPI.BusinessLogic.Persistence.EntityFrameworkCore.EntityMappingConfigs
 {
-    public class GitRepoConfiguration : IEntityTypeConfiguration<GitRepo>
+    public class IntegrationConfiguration : IEntityTypeConfiguration<Integration>
     {
-        public void Configure(EntityTypeBuilder<GitRepo> builder)
+        public void Configure(EntityTypeBuilder<Integration> builder)
         {
-            builder.Property(p => p.Url)
+            builder.Property(p => p.FtpHostname)
                 .IsRequired();
 
-            builder.HasOne<FtpNode>(p => p.FtpNode)
-                .WithOne(g => g.GitRepo)
+            builder.Property(p => p.FtpPassword)
+                .IsRequired();
+            
+            builder.Property(p => p.GitUrl)
                 .IsRequired();
         }
     }

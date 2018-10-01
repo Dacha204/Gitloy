@@ -1,5 +1,8 @@
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
+using Castle.Core.Internal;
 using Gitloy.Services.Common.Communicator;
 using Gitloy.Services.WebhookAPI.BusinessLogic.Core.Model;
 using Gitloy.Services.WebhookAPI.GithubPayloads;
@@ -31,7 +34,7 @@ namespace Gitloy.Services.WebhookAPI.BusinessLogic.Core.Handlers
         {
             try
             {
-                var git         = await LoadGit(data);
+                var integrations = LoadIntegrations(data);
                 //ToDo Notify that repo is setup correctly.
             }
             catch (Exception e)
@@ -40,10 +43,16 @@ namespace Gitloy.Services.WebhookAPI.BusinessLogic.Core.Handlers
             }
         }
 
-        private async Task<GitRepo> LoadGit(GithubPingEvent data)
+        private List<Integration> LoadIntegrations(GithubPingEvent data)
         {
-            return await _uow.GitRepositories.SingleOrDefaultAsync(x => x.Url == data.Repository.CloneUrl) 
-                   ?? throw new Exception($"Entry for git repo: {data.Repository.Url} not found");
+            var result = _uow.Integrations.Find(x => x.GitUrl == data.Repository.CloneUrl).ToList();
+            
+            if (result.IsNullOrEmpty())
+            {
+                _logger.LogError($"No integration found for '{data.Repository.CloneUrl}");
+            }
+
+            return result;
         }
     }
 }

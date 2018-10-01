@@ -11,8 +11,8 @@ namespace Gitloy.Services.WebhookAPI.BusinessLogic.Persistence.EntityFrameworkCo
     {
         private readonly WebhookApiContext _context;
 
-        private readonly Lazy<IRepository<GitRepo>> _gits;
-        public IRepository<GitRepo> GitRepositories => _gits.Value;
+        private readonly Lazy<IRepository<Integration>> _integrations;
+        public IRepository<Integration> Integrations => _integrations.Value;
 
         private readonly Lazy<IRepository<Request>> _requests;
         public IRepository<Request> Requests => _requests.Value;
@@ -20,7 +20,7 @@ namespace Gitloy.Services.WebhookAPI.BusinessLogic.Persistence.EntityFrameworkCo
         public UnitOfWork(WebhookApiContext context)
         {
             _context = context;
-            _gits = new Lazy<IRepository<GitRepo>>(() => new Repository<GitRepo>(_context));
+            _integrations = new Lazy<IRepository<Integration>>(() => new Repository<Integration>(_context));
             _requests = new Lazy<IRepository<Request>>(() => new Repository<Request>(_context));
         }
 

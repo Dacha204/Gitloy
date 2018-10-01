@@ -17,7 +17,7 @@ namespace Gitloy.Services.WebhookAPI.BusinessLogic.Core.Repositories
         Task<IEnumerable<TEntity>> GetAllPaginateAsync(int pageSize = 10, int pageIndex = 0);
 
         IEnumerable<TEntity> Find(Expression<Func<TEntity, bool>> predicate);
-
+        
         TEntity SingleOrDefault(Expression<Func<TEntity, bool>> predicate);
         Task<TEntity> SingleOrDefaultAsync(Expression<Func<TEntity, bool>> predicate);
 

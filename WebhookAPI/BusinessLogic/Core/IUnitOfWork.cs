@@ -7,7 +7,7 @@ namespace Gitloy.Services.WebhookAPI.BusinessLogic.Core
 {
     public interface IUnitOfWork
     {
-        IRepository<GitRepo> GitRepositories { get; }
+        IRepository<Integration> Integrations { get; }
         IRepository<Request> Requests { get; }
         
         int Complete();

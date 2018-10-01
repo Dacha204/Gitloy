@@ -19,47 +19,32 @@ namespace Gitloy.Services.WebhookAPI.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-            modelBuilder.Entity("Gitloy.Services.WebhookAPI.BusinessLogic.Core.Model.FtpNode", b =>
+            modelBuilder.Entity("Gitloy.Services.WebhookAPI.BusinessLogic.Core.Model.Integration", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<string>("Hostname")
+                    b.Property<string>("FtpHostname")
                         .IsRequired();
 
-                    b.Property<string>("Password")
+                    b.Property<string>("FtpPassword")
                         .IsRequired();
 
-                    b.Property<int>("Port");
+                    b.Property<int>("FtpPort");
 
-                    b.Property<string>("RootDirectory");
+                    b.Property<string>("FtpRootDirectory");
 
-                    b.Property<string>("Username");
+                    b.Property<string>("FtpUsername");
+
+                    b.Property<string>("GitBranch");
+
+                    b.Property<string>("GitUrl")
+                        .IsRequired();
 
                     b.HasKey("Id");
 
-                    b.ToTable("FtpNodes");
-                });
-
-            modelBuilder.Entity("Gitloy.Services.WebhookAPI.BusinessLogic.Core.Model.GitRepo", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<string>("Branch");
-
-                    b.Property<int>("FtpNodeId");
-
-                    b.Property<string>("Url");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("FtpNodeId")
-                        .IsUnique();
-
-                    b.ToTable("GitRepos");
+                    b.ToTable("Integrations");
                 });
 
             modelBuilder.Entity("Gitloy.Services.WebhookAPI.BusinessLogic.Core.Model.Request", b =>
@@ -68,7 +53,7 @@ namespace Gitloy.Services.WebhookAPI.Migrations
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<int?>("GitId");
+                    b.Property<int?>("IntegrationId");
 
                     b.Property<string>("ResultDetails");
 
@@ -80,24 +65,16 @@ namespace Gitloy.Services.WebhookAPI.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("GitId");
+                    b.HasIndex("IntegrationId");
 
                     b.ToTable("Requests");
                 });
 
-            modelBuilder.Entity("Gitloy.Services.WebhookAPI.BusinessLogic.Core.Model.GitRepo", b =>
-                {
-                    b.HasOne("Gitloy.Services.WebhookAPI.BusinessLogic.Core.Model.FtpNode", "FtpNode")
-                        .WithOne("GitRepo")
-                        .HasForeignKey("Gitloy.Services.WebhookAPI.BusinessLogic.Core.Model.GitRepo", "FtpNodeId")
-                        .OnDelete(DeleteBehavior.Cascade);
-                });
-
             modelBuilder.Entity("Gitloy.Services.WebhookAPI.BusinessLogic.Core.Model.Request", b =>
                 {
-                    b.HasOne("Gitloy.Services.WebhookAPI.BusinessLogic.Core.Model.GitRepo", "Git")
+                    b.HasOne("Gitloy.Services.WebhookAPI.BusinessLogic.Core.Model.Integration", "Integration")
                         .WithMany()
-                        .HasForeignKey("GitId");
+                        .HasForeignKey("IntegrationId");
                 });
 #pragma warning restore 612, 618
         }

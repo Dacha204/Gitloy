@@ -6,19 +6,18 @@ namespace Gitloy.Services.WebhookAPI.BusinessLogic.Persistence.EntityFrameworkCo
 {
     public class WebhookApiContext : DbContext
     {
-        public DbSet<FtpNode> FtpNodes { get; set; }
-        public DbSet<GitRepo> GitRepos { get; set; }
+        public DbSet<Integration> Integrations { get; set; }
         public DbSet<Request> Requests { get; set; }
         
         public WebhookApiContext(DbContextOptions<WebhookApiContext> options)
             :base(options)
         {
-            
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.ApplyConfiguration(new FtpNodesConfiguration());
+            modelBuilder.ApplyConfiguration(new IntegrationConfiguration());
+            modelBuilder.ApplyConfiguration(new RequestConfiguration());
             
             base.OnModelCreating(modelBuilder);
         }

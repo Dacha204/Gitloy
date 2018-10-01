@@ -1,12 +1,14 @@
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
+using Castle.Core.Internal;
 using Gitloy.BuildingBlocks.Messages.Data;
 using Gitloy.BuildingBlocks.Messages.WorkerJob;
 using Gitloy.BuildingBlocks.Messages.WorkerJob.Enums;
 using Gitloy.Services.Common.Communicator;
 using Gitloy.Services.WebhookAPI.BusinessLogic.Core.Model;
 using Gitloy.Services.WebhookAPI.GithubPayloads;
-using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
@@ -36,13 +38,15 @@ namespace Gitloy.Services.WebhookAPI.BusinessLogic.Core.Handlers
         {
             try
             {
-                var git         = await LoadGit(data);
-                var request     = await GenerateRequest(git);
-                var jobRequest  = GenerateWorkerJobRequest(request.Id, git);
-                var workerResponse = await _communicator.Bus.RequestAsync<WorkerJobRequest, WorkerJobResponse>(jobRequest);
-                await ProcessResponse(request, workerResponse);
-                
-                //ToDo Notify that job has completed.
+                var integrations = LoadIntegrations(data);
+                foreach (var integration in integrations)
+                {
+                    _logger.LogInformation($"Processing integration: " +
+                                           $"[{integration.Id}] {integration.GitUrl} => " +
+                                           $"{integration.FtpUsername}@{integration.FtpHostname}");
+                    
+                    await ProcessIntegration(integration);
+                }
             }
             catch (Exception e)
             {
@@ -51,17 +55,40 @@ namespace Gitloy.Services.WebhookAPI.BusinessLogic.Core.Handlers
             }    
         }
 
-        private async Task<GitRepo> LoadGit(GithubPushEvent data)
+        private async Task ProcessIntegration(Integration integration)
         {
-            return await _uow.GitRepositories.SingleOrDefaultAsync(x => x.Url == data.Repository.CloneUrl) 
-                   ?? throw new Exception($"Entry for git repo: {data.Repository.Url} not found");
+            try
+            {
+                var request     = await GenerateRequest(integration);
+                var jobRequest  = GenerateWorkerJobRequest(request.Id, integration);
+                var workerResponse = await _communicator.Bus.RequestAsync<WorkerJobRequest, WorkerJobResponse>(jobRequest);
+                await ProcessResponse(request, workerResponse);
+                //ToDo Notify that job has completed.
+                _logger.LogInformation($"Request {request.Id} processed. Result: {request.ResultStatus}");
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.ToString());
+            }
         }
         
-        private async Task<Request> GenerateRequest(GitRepo git)
+        private List<Integration> LoadIntegrations(GithubPushEvent data)
+        {
+            var result = _uow.Integrations.Find(x => x.GitUrl == data.Repository.CloneUrl).ToList();
+            
+            if (result.IsNullOrEmpty())
+            {
+                _logger.LogError($"No integration found for '{data.Repository.CloneUrl}");
+            }
+
+            return result;
+        }
+        
+        private async Task<Request> GenerateRequest(Integration integration)
         {
             var request = new Request()
             {
-                Git = git,
+                Integration = integration,
                 Status = RequestStatus.Requested,
                 ResultStatus = RequestResultStatus.Pending,
             };
@@ -71,7 +98,7 @@ namespace Gitloy.Services.WebhookAPI.BusinessLogic.Core.Handlers
             return request;
         }
 
-        private WorkerJobRequest GenerateWorkerJobRequest(int id, GitRepo git)
+        private WorkerJobRequest GenerateWorkerJobRequest(int id, Integration integration)
         {
             return new WorkerJobRequest()
             {
@@ -79,19 +106,19 @@ namespace Gitloy.Services.WebhookAPI.BusinessLogic.Core.Handlers
                 Status = WorkerJobStatus.Requested,
                 GitRepository = new GitRepository()
                 {
-                    Url = git.Url,
-                    Branch = git.Branch
+                    Url = integration.GitUrl,
+                    Branch = integration.GitBranch
                 },
                 FtpServer = new FtpServer()
                 {
                     UserAccount = new FtpAccount()
                     {
-                        Username = git.FtpNode.Username,
-                        Password = git.FtpNode.Password
+                        Username = integration.FtpUsername,
+                        Password = integration.FtpPassword
                     },
-                    RootDirectory = git.FtpNode.RootDirectory,
-                    Hostname = git.FtpNode.Hostname,
-                    Port = git.FtpNode.Port
+                    RootDirectory = integration.FtpRootDirectory,
+                    Hostname = integration.FtpHostname,
+                    Port = integration.FtpPort
                 }
             };
         }
