@@ -1,9 +1,8 @@
 FROM microsoft/dotnet:2.1-sdk AS build
 WORKDIR /src
 
-COPY JobRunner/JobRunner.csproj JobRunner/
-RUN dotnet restore JobRunner/JobRunner.csproj
 COPY . .
+RUN dotnet restore JobRunner/JobRunner.csproj
 WORKDIR /src/JobRunner
 RUN dotnet build JobRunner.csproj -c Release -o /app
 
