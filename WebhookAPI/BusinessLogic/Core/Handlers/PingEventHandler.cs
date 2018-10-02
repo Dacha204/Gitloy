@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Castle.Core.Internal;
+using Gitloy.BuildingBlocks.Messages.IntegrationEvents;
 using Gitloy.Services.Common.Communicator;
 using Gitloy.Services.WebhookAPI.BusinessLogic.Core.Model;
 using Gitloy.Services.WebhookAPI.GithubPayloads;
@@ -35,7 +36,10 @@ namespace Gitloy.Services.WebhookAPI.BusinessLogic.Core.Handlers
             try
             {
                 var integrations = LoadIntegrations(data);
-                //ToDo Notify that repo is setup correctly.
+                foreach (var integration in integrations)
+                {
+                    await RaiseIntegrationPingEvent(integration);
+                }
             }
             catch (Exception e)
             {
@@ -53,6 +57,26 @@ namespace Gitloy.Services.WebhookAPI.BusinessLogic.Core.Handlers
             }
 
             return result;
+        }
+        
+        private async Task RaiseIntegrationPingEvent(Integration integration)
+        {
+            try
+            {
+                _logger.LogInformation($"Ping received for integration: [{integration.Guid}] " +
+                                       $"{integration.GitUrl} => {integration.FtpUsername}@{integration.FtpHostname}");
+
+                var integrationEvent = new IntegrationPingEvent()
+                {
+                    IntegrationGuid = integration.Guid
+                };
+
+                await _communicator.Bus.PublishAsync(integrationEvent);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.ToString());
+            }
         }
     }
 }

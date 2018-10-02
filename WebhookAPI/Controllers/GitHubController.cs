@@ -53,9 +53,9 @@ namespace Gitloy.Services.WebhookAPI.Controllers
                         throw new Exception();
                 }
             }
-            catch (Exception)
+            catch (Exception e)
             {
-                responseMessage = $"Gitloy: Unsupported event received.";
+                responseMessage = $"Gitloy: Unsupported event received. \n{e.ToString()}" ;
                 return UnprocessableEntity(responseMessage);
             }
 

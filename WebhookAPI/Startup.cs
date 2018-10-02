@@ -8,6 +8,7 @@ using Gitloy.Services.Common.Communicator;
 using Gitloy.Services.WebhookAPI.BusinessLogic;
 using Gitloy.Services.WebhookAPI.BusinessLogic.Core;
 using Gitloy.Services.WebhookAPI.BusinessLogic.Core.Handlers;
+using Gitloy.Services.WebhookAPI.BusinessLogic.Core.HostedServices;
 using Gitloy.Services.WebhookAPI.BusinessLogic.Persistence.EntityFrameworkCore;
 using Gitloy.Services.WebhookAPI.GithubPayloads;
 using Microsoft.EntityFrameworkCore;
@@ -44,6 +45,7 @@ namespace Gitloy.Services.WebhookAPI
         private void SetupBusCommunication(IServiceCollection services)
         {
             services.AddSingleton<ICommunicator, Communicator>();
+            services.AddHostedService<IntegrationHostedService>();
         }
 
         private void SetupPersistence(IServiceCollection services)

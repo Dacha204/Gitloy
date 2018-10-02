@@ -58,6 +58,7 @@ namespace MessageSender
                 services.AddLogging();
                 services.AddSingleton<ICommunicator, Communicator>();
                 services.AddSingleton<MessageSender>();
+                services.AddHostedService<MessageListener>();
             });
         }
     }

@@ -2,14 +2,16 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
+using Gitloy.Services.WebhookAPI.BusinessLogic.Core.Model;
 using Gitloy.Services.WebhookAPI.BusinessLogic.Core.Repositories;
 using Microsoft.AspNetCore.Hosting.Internal;
 using Microsoft.EntityFrameworkCore;
 
 namespace Gitloy.Services.WebhookAPI.BusinessLogic.Persistence.EntityFrameworkCore.Repositories
 {
-    public class Repository<TEntity> : IRepository<TEntity> where TEntity : class
+    public class Repository<TEntity> : IRepository<TEntity> where TEntity : Model
     {   
         private DbContext Context { get; set; }
         private readonly DbSet<TEntity> _dbSet;
@@ -22,22 +24,24 @@ namespace Gitloy.Services.WebhookAPI.BusinessLogic.Persistence.EntityFrameworkCo
         
         public TEntity Get(int id)
         {
-            return _dbSet.Find(id);
+            var entity = _dbSet.Find(id);
+            return entity.DeleteFlag ? null : entity;
         }
 
         public async Task<TEntity> GetAsync(int id)
         {
-            return await _dbSet.FindAsync(id);
+            var entity = await _dbSet.FindAsync(id);
+            return entity.DeleteFlag ? null : entity;
         }
 
         public IEnumerable<TEntity> GetAll()
         {
-            return _dbSet.ToList();
+            return _dbSet.Where(x => !x.DeleteFlag).ToList();
         }
 
         public async Task<IEnumerable<TEntity>> GetAllAsync()
         {
-            return await _dbSet.ToListAsync();
+            return await _dbSet.Where(x => !x.DeleteFlag).ToListAsync();
         }
 
         public IEnumerable<TEntity> GetAllPaginate(int pageSize, int pageIndex)
@@ -48,7 +52,9 @@ namespace Gitloy.Services.WebhookAPI.BusinessLogic.Persistence.EntityFrameworkCo
             if (pageIndex < 0)
                 throw new ArgumentException("PageIndex is negative");
             
-            return _dbSet.Skip(pageSize * pageIndex)
+            return _dbSet
+                .Where(x => !x.DeleteFlag)
+                .Skip(pageSize * pageIndex)
                 .Take(pageSize)
                 .ToList();
         }
@@ -61,34 +67,46 @@ namespace Gitloy.Services.WebhookAPI.BusinessLogic.Persistence.EntityFrameworkCo
             if (pageIndex < 0)
                 throw new ArgumentException("PageIndex is negative");
 
-            return await _dbSet.Skip(pageSize * pageIndex)
-                              .Take(pageSize)
-                              .ToListAsync();
+            return await _dbSet
+                .Where(x => !x.DeleteFlag)
+                .Skip(pageSize * pageIndex)
+                .Take(pageSize)
+                .ToListAsync();
         }
 
         public IEnumerable<TEntity> Find(Expression<Func<TEntity, bool>> predicate)
         {
-            return _dbSet.Where(predicate);
+            return _dbSet
+                .Where(x => !x.DeleteFlag)
+                .Where(predicate);
         }
 
         public TEntity SingleOrDefault(Expression<Func<TEntity, bool>> predicate)
         {
-            return _dbSet.SingleOrDefault(predicate);
+            return _dbSet
+                .Where(x => !x.DeleteFlag)
+                .SingleOrDefault(predicate);
         }
 
         public async Task<TEntity> SingleOrDefaultAsync(Expression<Func<TEntity, bool>> predicate)
         {
-            return await _dbSet.SingleOrDefaultAsync(predicate);
+            return await _dbSet
+                .Where(x => !x.DeleteFlag)
+                .SingleOrDefaultAsync(predicate);
         }
 
         public TEntity FirstOrDefault(Expression<Func<TEntity, bool>> predicate)
         {
-            return _dbSet.FirstOrDefault(predicate);
+            return _dbSet
+                .Where(x => !x.DeleteFlag)
+                .FirstOrDefault(predicate);
         }
 
         public async Task<TEntity> FirstOrDefaultAsync(Expression<Func<TEntity, bool>> predicate)
         {
-            return await _dbSet.FirstOrDefaultAsync(predicate);
+            return await _dbSet
+                .Where(x => !x.DeleteFlag)
+                .FirstOrDefaultAsync(predicate);
         }
 
         public void Add(TEntity entity)
@@ -113,12 +131,15 @@ namespace Gitloy.Services.WebhookAPI.BusinessLogic.Persistence.EntityFrameworkCo
 
         public void Remove(TEntity entity)
         {
-            _dbSet.Remove(entity);
+            entity.DeleteFlag = true;
         }
 
         public void RemoveRange(IEnumerable<TEntity> entities)
         {
-            _dbSet.RemoveRange(entities);
+            foreach (var entity in entities)
+            {
+                entity.DeleteFlag = true;
+            }
         }
 
         public void Update(TEntity entityToUpdate)
@@ -129,42 +150,58 @@ namespace Gitloy.Services.WebhookAPI.BusinessLogic.Persistence.EntityFrameworkCo
 
         public bool Any(Expression<Func<TEntity, bool>> predicate)
         {
-            return _dbSet.Any(predicate);
+            return _dbSet
+                .Where(x => !x.DeleteFlag)
+                .Any(predicate);
         }
 
         public async Task<bool> AnyAsync(Expression<Func<TEntity, bool>> predicate)
         {
-            return await _dbSet.AnyAsync(predicate);
+            return await _dbSet
+                .Where(x => !x.DeleteFlag)
+                .AnyAsync(predicate);
         }
 
         public bool All(Expression<Func<TEntity, bool>> predicate)
 		{
-			return _dbSet.All(predicate);
+			return _dbSet
+			    .Where(x => !x.DeleteFlag)
+			    .All(predicate);
 		}
 
         public async Task<bool> AllAsync(Expression<Func<TEntity, bool>> predicate)
         {
-            return await _dbSet.AllAsync(predicate);
+            return await _dbSet
+                .Where(x => !x.DeleteFlag)
+                .AllAsync(predicate);
         }
 
         public bool Contains(TEntity entity)
 		{
-			return _dbSet.Contains(entity);
+			return _dbSet
+			    .Where(x => !x.DeleteFlag)
+			    .Contains(entity);
 		}
 
         public async Task<bool> ContainsAsync(TEntity entity)
         {
-            return await _dbSet.ContainsAsync(entity);
+            return await _dbSet
+                .Where(x => !x.DeleteFlag)
+                .ContainsAsync(entity);
         }
 
         public int Count(Expression<Func<TEntity, bool>> predicate)
 		{
-			return _dbSet.Count(predicate);
+			return _dbSet
+			    .Where(x => !x.DeleteFlag)
+			    .Count(predicate);
 		}
 
         public async Task<int> CountAsync(Expression<Func<TEntity, bool>> predicate)
         {
-            return await _dbSet.CountAsync(predicate);
+            return await _dbSet
+                .Where(x => !x.DeleteFlag)
+                .CountAsync(predicate);
         }
 
         public bool Exists(Expression<Func<TEntity, bool>> predicate)

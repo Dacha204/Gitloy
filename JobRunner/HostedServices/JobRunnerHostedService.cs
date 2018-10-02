@@ -10,7 +10,7 @@ using Microsoft.Extensions.Logging;
 
 namespace Gitloy.Services.JobRunner.HostedServices
 {
-    public class JobRunnerHostedService : IHostedService, IDisposable
+    public class JobRunnerHostedService : IHostedService
     {
         private readonly ILogger _logger;
         private readonly ICommunicator _comm;
@@ -53,11 +53,6 @@ namespace Gitloy.Services.JobRunner.HostedServices
             _subscriptions.Clear();
 
             return Task.CompletedTask;
-        }
-        
-        public void Dispose()
-        {
-            _comm?.Dispose();
         }
     }
 }

@@ -15,10 +15,8 @@ namespace Gitloy.Services.WebhookAPI.BusinessLogic.Core.Model
         Failed
     }
     
-    public class Request
+    public class Request : Model
     {
-        public int Id { get; set; }
-        public Guid Guid { get; set; }
         public DateTime Date { get; set; }
         
         public virtual Integration Integration { get; set; }
@@ -31,7 +29,6 @@ namespace Gitloy.Services.WebhookAPI.BusinessLogic.Core.Model
         {
             Status = RequestStatus.Requested;
             ResultStatus = RequestResultStatus.Pending;
-            Guid = Guid.NewGuid();
             Date = DateTime.Now;
         }
     }

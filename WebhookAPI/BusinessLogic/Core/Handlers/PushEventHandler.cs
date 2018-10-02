@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Castle.Core.Internal;
 using Gitloy.BuildingBlocks.Messages.Data;
+using Gitloy.BuildingBlocks.Messages.IntegrationEvents;
 using Gitloy.BuildingBlocks.Messages.WorkerJob;
 using Gitloy.BuildingBlocks.Messages.WorkerJob.Enums;
 using Gitloy.Services.Common.Communicator;
@@ -63,15 +64,33 @@ namespace Gitloy.Services.WebhookAPI.BusinessLogic.Core.Handlers
                 var jobRequest  = GenerateWorkerJobRequest(request.Id, integration);
                 var workerResponse = await _communicator.Bus.RequestAsync<WorkerJobRequest, WorkerJobResponse>(jobRequest);
                 await ProcessResponse(request, workerResponse);
-                //ToDo Notify that job has completed.
+
+                await RaiseIntegrationPushEvent(integration, workerResponse);
+                
                 _logger.LogInformation($"Request {request.Id} processed. Result: {request.ResultStatus}");
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex.ToString());
+                //Todo NotifyFailed?
             }
         }
-        
+
+        private async Task RaiseIntegrationPushEvent(Integration integration, WorkerJobResponse workerResponse)
+        {
+            var integrationEvent = new IntegrationPushEvent()
+            {
+                ResultStatus = workerResponse.ResultStatus == WorkerJobResultStatus.Successful
+                    ? ResultStatus.Successful
+                    : ResultStatus.Failed,
+                IntegrationGuid = integration.Guid,
+                ResultMessage = workerResponse.ResultMessage,
+                Details = workerResponse.JobOutput
+            };
+
+            await _communicator.Bus.PublishAsync(integrationEvent);
+        }
+
         private List<Integration> LoadIntegrations(GithubPushEvent data)
         {
             var result = _uow.Integrations.Find(x => x.GitUrl == data.Repository.CloneUrl).ToList();
