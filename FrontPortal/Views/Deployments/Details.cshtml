@@ -1,0 +1,101 @@
+@model DeploymentDetailsViewModel
+
+@{
+    ViewBag.Title = "Deployment Details";
+    Layout = "_Layout";
+}
+
+
+@await Html.PartialAsync("_HeaderJumbotronPartial", new HeaderJumbotronPartialModel("Deployment", 
+    "Deployment details and events"))
+@await Html.PartialAsync("_AlertPartial")
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title">Details</h3>
+                </div>
+                <div class="panel-body">
+                    <form class="form-horizontal">
+                        @foreach (var prop in @Model.Deployment.GetType().GetProperties())
+                        {
+                            <div class="form-group">
+                                <label for="@prop.Name" class="col-sm-2 control-label">@prop.Name</label>
+                                <div class="col-sm-10">
+                                    <p class="form-control-static">@prop.GetValue(@Model.Deployment)</p>
+                                </div>
+                            </div>
+                        }
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="row">
+        <div class="col-md-12">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title">Event logs</h3>
+                </div>
+                <div class="panel-body">
+                    <div class="row">
+                        <div class="table">
+                            <table id="deployments-log-table" class="table table-striped">
+                                <thead>
+                                    <th>#</th>
+                                    <th>Date</th>
+                                    <th>Type</th>
+                                    <th>Status</th>
+                                    <th>Description</th>
+                                    <th>Action</th>
+                                </thead>
+    
+                                <tbody>
+    
+                                @foreach (var log in Model.Logs)
+                                {
+                                    <tr>
+                                        <td>@log.Guid</td>
+                                        <td>@log.DateTime</td>
+                                        <td>@log.Type</td>
+                                        <td>@log.Status</td>
+                                        <td>@log.Description</td>
+                                        <td><button class="btn btn-primary btn-xs" data-title="Edit" data-toggle="modal" data-target="#modal-@log.Guid">View output</button></td>
+                                    </tr>
+                                }
+    
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    @foreach (var log in Model.Logs)
+    {
+        <div class="modal fade" id="modal-@log.Guid" tabindex="-1" role="dialog">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span></button>
+                        <h4 class="modal-title" id="Heading">Job output</h4>
+                    </div>
+                    <div class="modal-body">
+                        <p>
+                            <samp>
+                                @log.ResultMessage
+                            </samp>
+                        </p>
+                    </div>
+                    <!-- /.modal-content --> 
+                </div>
+                <!-- /.modal-dialog --> 
+            </div>
+        </div>
+    }
+</div>

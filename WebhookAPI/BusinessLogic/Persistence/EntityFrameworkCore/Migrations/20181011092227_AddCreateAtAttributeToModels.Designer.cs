@@ -4,14 +4,16 @@ using Gitloy.Services.WebhookAPI.BusinessLogic.Persistence.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Gitloy.Services.WebhookAPI.Migrations
 {
     [DbContext(typeof(WebhookApiContext))]
-    partial class WebhookApiContextModelSnapshot : ModelSnapshot
+    [Migration("20181011092227_AddCreateAtAttributeToModels")]
+    partial class AddCreateAtAttributeToModels
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

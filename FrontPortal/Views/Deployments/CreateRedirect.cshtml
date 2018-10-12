@@ -1,0 +1,70 @@
+@model WebhookParamsViewModel
+
+@{
+    ViewBag.Title = "title";
+    Layout = "_Layout";
+}
+
+@await Html.PartialAsync("_HeaderJumbotronPartial", new HeaderJumbotronPartialModel("Setup Webhook", "Step 2"))
+@await Html.PartialAsync("_AlertPartial")
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h2 class="panel-title">Create new webhook</h2>
+                </div>
+                <div class="panel-body">
+                    <p>Navigate to url and enter parameters from section bellow.</p>
+                    <div class="well lead"><a href="@Model.CreateWebhookURL" target="_blank">@Model.CreateWebhookURL</a></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h2 class="panel-title">Webhook parameters</h2>
+                </div>
+                <div class="panel-body">
+                    <form class="form-horizontal">
+                        
+                        <div class="form-group">
+                            <label for="PayloadUrl" class="col-md-2 control-label">Payload URL</label>
+                            <div class="col-md-10">
+                                <p id="PayloadUrl" class="form-control-static">@Model.PayloadURL</p>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="ContentType" class="col-md-2 control-label">Content Type</label>
+                            <div class="col-md-10">
+                                <p id="ContentType" class="form-control-static">@Model.ContentType</p>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="Secret" class="col-md-2 control-label">Secret</label>
+                            <div class="col-md-10">
+                                <p id="Secret" class="form-control-static">@Model.Secret</p>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="EventSubscription" class="col-md-2 control-label">Event Trigger</label>
+                            <div class="col-md-10">
+                                <p id="EventSubscription" class="form-control-static">Just the push event.</p>
+                            </div>
+                        </div>
+                        
+                        <a asp-action="Details" asp-route-guid="@Model.DeploymentGuid">
+                            <button class="btn btn-lg btn-success btn-block">Finish</button>
+                        </a>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

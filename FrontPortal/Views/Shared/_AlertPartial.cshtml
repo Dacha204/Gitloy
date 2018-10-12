@@ -1,0 +1,32 @@
+
+@if (ViewBag.AlertSuccess != null)
+{
+    <div class="alert alert-success alert-dismissible" role="alert">
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <strong>Success!</strong> @ViewBag.AlertSuccess
+    </div>
+}
+
+@if (ViewBag.AlertWarrning != null)
+{
+    <div class="alert alert-warning alert-dismissible" role="alert">
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <strong>Success!</strong> @ViewBag.AlertWarrning
+    </div>
+}
+
+@if (ViewBag.AlertInfo != null)
+{
+    <div class="alert alert-info alert-dismissible" role="alert">
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <strong>Success!</strong> @ViewBag.AlertInfo
+    </div>
+}
+
+@if (ViewBag.AlertError != null)
+{
+    <div class="alert alert-danger alert-dismissible" role="alert">
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <strong>Success!</strong> @ViewBag.AlertError
+    </div>
+}

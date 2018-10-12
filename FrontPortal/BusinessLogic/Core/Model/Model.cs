@@ -1,6 +1,6 @@
 using System;
 
-namespace Gitloy.Services.WebhookAPI.BusinessLogic.Core.Model
+namespace Gitloy.Services.FrontPortal.BusinessLogic.Core.Model
 {
     public abstract class Model
     {
@@ -12,8 +12,8 @@ namespace Gitloy.Services.WebhookAPI.BusinessLogic.Core.Model
         protected Model()
         {
             Guid = Guid.NewGuid();
-            DeleteFlag = false;
             CreatedAt = DateTime.Now;
+            DeleteFlag = false;
         }
     }
 }

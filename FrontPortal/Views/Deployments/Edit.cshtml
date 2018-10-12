@@ -1,0 +1,64 @@
+@model Gitloy.Services.FrontPortal.ViewModels.Deployment.DeploymentViewModel
+
+@{
+    ViewBag.Title = "DeploymentEdit";
+    Layout = "_Layout";
+    
+}
+
+@await Html.PartialAsync("_HeaderJumbotronPartial", new HeaderJumbotronPartialModel("Edit Deployment", ""))
+@await Html.PartialAsync("_AlertPartial")
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-12">
+            <form asp-action="Edit" method="post">
+                <input asp-for="Guid" type="hidden"/>
+                
+                <div class="form-group">
+                    <label asp-for="GitUrl"></label>
+                    <input asp-for="GitUrl" type="url" class="form-control" placeholder="https://github.com/Username/GitRepository.git"/>
+                    <span asp-validation-for="GitUrl"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="GitBranch"></label>
+                    <input asp-for="GitBranch" type="text" class="form-control" placeholder="master"/>
+                    <span asp-validation-for="GitBranch"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="FtpHostname"></label>
+                    <input asp-for="FtpHostname" type="text" class="form-control" placeholder="ftp.example.com"/>
+                    <span asp-validation-for="FtpHostname"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="FtpPort"></label>
+                    <input asp-for="FtpPort" type="number" class="form-control" placeholder="21"/>
+                    <span asp-validation-for="FtpPort"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="FtpUsername"></label>
+                    <input asp-for="FtpUsername" type="text" class="form-control" placeholder="admin"/>
+                    <span asp-validation-for="FtpUsername"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="FtpPassword"></label>
+                    <input asp-for="FtpPassword" type="text" class="form-control" placeholder="admin"/>
+                    <span asp-validation-for="FtpPassword"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="FtpRootDirectory"></label>
+                    <input asp-for="FtpRootDirectory" type="text" class="form-control" placeholder="/"/>
+                    <span asp-validation-for="FtpRootDirectory"></span>
+                </div>
+
+                <button type="submit" class="btn btn-lg btn-warning btn-block">Update</button>
+            </form>
+        </div>
+    </div>
+</div>

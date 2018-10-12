@@ -33,10 +33,10 @@ namespace Gitloy.Services.WebhookAPI
 
             SetupBusCommunication(services);
             SetupPersistence(services);
-            SetupBusinessLoggic(services);
+            SetupBusinessLogic(services);
         }
 
-        private void SetupBusinessLoggic(IServiceCollection services)
+        private void SetupBusinessLogic(IServiceCollection services)
         {
             services.AddScoped<IGitEventHandler<GithubPushEvent>, PushEventHandler>();
             services.AddScoped<IGitEventHandler<GithubPingEvent>, PingEventHandler>();

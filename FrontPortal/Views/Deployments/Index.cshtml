@@ -1,0 +1,75 @@
+@model List<Gitloy.Services.FrontPortal.ViewModels.Deployment.DeploymentViewModel>
+
+@{
+    ViewBag.Title = "My deployments";
+    Layout = "_Layout";
+}
+
+@await Html.PartialAsync("_HeaderJumbotronPartial", new HeaderJumbotronPartialModel(title: "My deployments", description: "Here you can see your deployments"))
+@await Html.PartialAsync("_AlertPartial")
+
+<div class="container">
+    <div class="row form-group">
+        <div class="col-md-12">
+            <a asp-action="Create"><button type="button" class="btn btn-primary active col-md-2">Add</button></a>
+        </div>
+    </div>
+    
+    <div class="row form-group">
+        <div class="col-md-12">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title">Deployment list</h3>
+                </div>
+                <div class="panel-body">
+                    <div class="row">
+                        <div class="table">
+                            <table id="deployments-table" class="table table-striped">
+                                <thead>
+                                <th>#</th>
+                                <th>Date</th>
+                                <th>GitUrl</th>
+                                <th>GitBranch</th>
+                                <th>FtpHostname</th>
+                                <th>Port</th>
+                                <th>Username</th>
+                                <th>Action</th>
+                                </thead>
+
+                                <tbody>
+
+                                @foreach (var deployment in Model)
+                                {
+                                    <tr>
+                                        <td>@deployment.Guid</td>
+                                        <td>@deployment.CreatedAt</td>
+                                        <td>@deployment.GitUrl</td>
+                                        <td>@deployment.GitBranch</td>
+                                        <td>@deployment.FtpHostname</td>
+                                        <td>@deployment.FtpPort</td>
+                                        <td>@deployment.FtpUsername</td>
+                                        <td>
+                                            <div class="dropdown">
+                                                <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">
+                                                    Action <span class="caret"></span>
+                                                </button>
+
+                                                <ul class="dropdown-menu">
+                                                    <li><a asp-action="Details" asp-route-guid="@deployment.Guid" class="dropdown-item">Details</a></li>
+                                                    <li><a asp-action="Edit" asp-route-guid="@deployment.Guid" asp-class="dropdown-item">Edit</a></li>
+                                                    <li><a asp-action="Delete" asp-route-guid="@deployment.Guid" class="dropdown-item">Delete</a></li>
+                                                </ul>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                }
+
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
