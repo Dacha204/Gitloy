@@ -144,13 +144,13 @@ namespace Gitloy.Services.WebhookAPI.GithubPayloads.Common
         public string DeploymentsUrl { get; set; }
 
         [JsonProperty("created_at")]
-        public DateTime CreatedAt { get; set; }
+        public string CreatedAt { get; set; }
 
         [JsonProperty("updated_at")]
         public DateTime UpdatedAt { get; set; }
 
         [JsonProperty("pushed_at")]
-        public DateTime PushedAt { get; set; }
+        public string PushedAt { get; set; }
 
         [JsonProperty("git_url")]
         public string GitUrl { get; set; }

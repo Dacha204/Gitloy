@@ -17,7 +17,7 @@ namespace Gitloy.Services.JobRunner
                 {
                     ValidateRequest(request);
                 
-                    var command = $"/bin/bash ./runner.sh " +
+                    var command = $"/bin/bash ./Resources/runner.sh " +
                                   $"-h {request.FtpServer.Hostname} " +
                                   $"-P {request.FtpServer.Port} " +
                                   $"-d {request.FtpServer.RootDirectory} " +

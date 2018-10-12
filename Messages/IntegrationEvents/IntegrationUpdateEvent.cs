@@ -13,12 +13,14 @@ namespace Gitloy.BuildingBlocks.Messages.IntegrationEvents
         public string FtpUsername { get; set; }
         public string GitUrl { get; set; }
         public string GitBranch { get; set; }
-        
+        public string FtpRootDirectory { get; set; }
+
         protected override void ValidateMe()
         {
             ValidateString(nameof(FtpHostname), FtpHostname);
             ValidateString(nameof(FtpPassword), FtpPassword);
             ValidateString(nameof(FtpUsername), FtpUsername);
+            ValidateString(nameof(FtpRootDirectory), FtpRootDirectory);
             ValidateString(nameof(GitUrl), GitUrl);
             ValidateString(nameof(GitBranch), GitBranch);
             ValidatePort(FtpPort);            

@@ -1,3 +1,4 @@
+@using Gitloy.Services.FrontPortal.BusinessLogic.Core.Model
 @model List<Gitloy.Services.FrontPortal.ViewModels.Deployment.DeploymentViewModel>
 
 @{
@@ -26,7 +27,7 @@
                         <div class="table">
                             <table id="deployments-table" class="table table-striped">
                                 <thead>
-                                <th>#</th>
+                                <th>Status</th>
                                 <th>Date</th>
                                 <th>GitUrl</th>
                                 <th>GitBranch</th>
@@ -41,7 +42,19 @@
                                 @foreach (var deployment in Model)
                                 {
                                     <tr>
-                                        <td>@deployment.Guid</td>
+                                        <td>
+                                            @switch (deployment.State)
+                                            {
+                                                case DeploymentState.WaitingForPingEvent:
+                                                    <i class="glyphicon glyphicon-time"></i>
+                                                    break;
+                                                case DeploymentState.Verified:
+                                                    <i class="glyphicon glyphicon-ok-circle"></i>
+                                                    break;
+                                                default:
+                                                    throw new ArgumentOutOfRangeException();
+                                            }
+                                        </td>
                                         <td>@deployment.CreatedAt</td>
                                         <td>@deployment.GitUrl</td>
                                         <td>@deployment.GitBranch</td>

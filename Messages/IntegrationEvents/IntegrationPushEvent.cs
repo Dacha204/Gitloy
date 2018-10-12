@@ -19,6 +19,9 @@ namespace Gitloy.BuildingBlocks.Messages.IntegrationEvents
         public string ResultMessage { get; set; }
         public string Details { get; set; }
 
+        //TODO
+//        public string LastCommit { get; set; }
+        
         public IntegrationPushEvent()
         {
             ResultStatus = ResultStatus.Unknown;

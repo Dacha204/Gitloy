@@ -91,7 +91,8 @@ namespace Gitloy.Services.WebhookAPI.BusinessLogic.Core.HostedServices
                     integration.FtpUsername = @event.FtpUsername;
                     integration.GitUrl = @event.GitUrl;
                     integration.GitBranch = @event.GitBranch;
-
+                    integration.FtpRootDirectory = @event.FtpRootDirectory;
+                    
                     await uof.CompleteAsync();
 
                     _logger.LogInformation($"Integration {integration.Guid} updated");

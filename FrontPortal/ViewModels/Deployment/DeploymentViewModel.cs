@@ -1,4 +1,5 @@
 using System;
+using Gitloy.Services.FrontPortal.BusinessLogic.Core.Model;
 
 namespace Gitloy.Services.FrontPortal.ViewModels.Deployment
 {
@@ -6,6 +7,7 @@ namespace Gitloy.Services.FrontPortal.ViewModels.Deployment
     {
         public Guid Guid { get; set; }
         public DateTime CreatedAt { get; set; }
+        public DeploymentState State { get; set; }
         
         public string GitUrl { get; set; }
         public string GitBranch { get; set; } = "master";
@@ -31,6 +33,7 @@ namespace Gitloy.Services.FrontPortal.ViewModels.Deployment
             FtpPassword = deployment.FtpPassword;
             FtpPort = deployment.FtpPort;
             CreatedAt = deployment.CreatedAt;
+            State = deployment.State;
         }
     }
 }

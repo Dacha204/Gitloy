@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
 using System.Security.Claims;
+using Gitloy.BuildingBlocks.Messages.IntegrationEvents;
+using Gitloy.Services.Common.Communicator;
 using Gitloy.Services.FrontPortal.BusinessLogic.Core.Model;
 using Gitloy.Services.FrontPortal.Controllers;
 using Gitloy.Services.FrontPortal.ViewModels;
@@ -31,16 +33,19 @@ namespace Gitloy.Services.FrontPortal.BusinessLogic.Core.Handlers
         private readonly UserManager<IdentityUser> _userManager;
         private readonly ILogger<DeploymentHandler> _logger;
         private readonly IConfiguration _configuration;
+        private readonly ICommunicator _communicator;
 
         public DeploymentHandler(IUnitOfWork unitOfWork, 
             UserManager<IdentityUser> userManager,
             ILogger<DeploymentHandler> logger,
-            IConfiguration configuration)
+            IConfiguration configuration,
+            ICommunicator communicator)
         {
             _unitOfWork = unitOfWork;
             _userManager = userManager;
             _logger = logger;
             _configuration = configuration;
+            _communicator = communicator;
         }
 
         public IList<DeploymentViewModel> ListAll(ClaimsPrincipal user)
@@ -75,11 +80,34 @@ namespace Gitloy.Services.FrontPortal.BusinessLogic.Core.Handlers
                 GitBranch = deployment.GitBranch,
                 GitUrl = deployment.GitUrl,
                 FtpRootDirectory = deployment.FtpRootDirectory,
+                State = DeploymentState.WaitingForPingEvent
             };
             
             _unitOfWork.Deployments.Add(newDeployment);
+            
+            newDeployment.Logs.Add(new DeploymentLog()
+            {
+                Description = "Created",
+                Status = ResultStatus.Successful,
+                DateTime = DateTime.Now,
+                EventType = "create",
+                ResultMessage = string.Empty,
+            });
+            
             _unitOfWork.Complete();
 
+            _communicator.Bus.Publish(new IntegrationCreateEvent()
+            {
+                FtpHostname = newDeployment.FtpHostname,
+                FtpPassword = newDeployment.FtpPassword,
+                FtpPort = newDeployment.FtpPort,
+                FtpUsername = newDeployment.FtpUsername,
+                GitBranch = newDeployment.GitBranch,
+                GitUrl = newDeployment.GitUrl,
+                FtpRootDirectory = newDeployment.FtpRootDirectory,
+                IntegrationGuid = newDeployment.Guid
+            });
+            
             return newDeployment;
         }
         
@@ -98,7 +126,30 @@ namespace Gitloy.Services.FrontPortal.BusinessLogic.Core.Handlers
             dep.GitBranch = deployment.GitBranch;
             dep.GitUrl = deployment.GitUrl;
 
+            dep.Logs.Add(new DeploymentLog()
+            {
+                Description = "Changed",
+                Status = ResultStatus.Successful,
+                DateTime = DateTime.Now,
+                EventType = "edit",
+                ResultMessage = string.Empty
+            });
+            
             _unitOfWork.Complete();
+            
+            
+            _communicator.Bus.Publish(new IntegrationUpdateEvent()
+            {
+                FtpHostname = dep.FtpHostname,
+                FtpPassword = dep.FtpPassword,
+                FtpPort = dep.FtpPort,
+                FtpUsername = dep.FtpUsername,
+                GitBranch = dep.GitBranch,
+                GitUrl = dep.GitUrl,
+                IntegrationGuid = dep.Guid,
+                FtpRootDirectory = dep.FtpRootDirectory
+            });
+            
         }
 
         public void DeleteDeployment(Guid deploymentGuid)
@@ -108,6 +159,11 @@ namespace Gitloy.Services.FrontPortal.BusinessLogic.Core.Handlers
             
             _unitOfWork.Deployments.Remove(deployment);
             _unitOfWork.Complete();
+            
+            _communicator.Bus.Publish(new IntegrationDeleteEvent()
+            {
+                IntegrationGuid = deployment.Guid,
+            });
         }
 
         public DeploymentDetailsViewModel GetDetails(Guid deploymentGuid)
@@ -139,6 +195,7 @@ namespace Gitloy.Services.FrontPortal.BusinessLogic.Core.Handlers
         {
             bool conflictAlreadyLinkedGitAndFtp = _unitOfWork.Deployments.Any(x =>
                 x.GitUrl == deployment.GitUrl &&
+                x.GitBranch == deployment.GitBranch &&
                 x.FtpHostname == deployment.FtpHostname &&
                 x.FtpRootDirectory == deployment.FtpRootDirectory);
             
@@ -149,10 +206,11 @@ namespace Gitloy.Services.FrontPortal.BusinessLogic.Core.Handlers
 
         private void CheckEditConflicts(DeploymentViewModel deployment)
         {
-            bool conflictAlreadyLinkedGitAndFtp = _unitOfWork.Deployments.Any(x =>
+            bool conflictAlreadyLinkedGitAndFtp = _unitOfWork.Deployments.Count(x =>
                 x.GitUrl == deployment.GitUrl &&
+                x.GitBranch == deployment.GitBranch &&
                 x.FtpHostname == deployment.FtpHostname &&
-                x.FtpRootDirectory == deployment.FtpRootDirectory);
+                x.FtpRootDirectory == deployment.FtpRootDirectory) > 1;
             
             if (conflictAlreadyLinkedGitAndFtp)
                 throw new Exception("Git and FTP host already linked.");

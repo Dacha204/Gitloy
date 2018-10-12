@@ -1,6 +1,7 @@
 ﻿using Gitloy.Services.Common.Communicator;
 using Gitloy.Services.FrontPortal.BusinessLogic.Core;
 using Gitloy.Services.FrontPortal.BusinessLogic.Core.Handlers;
+using Gitloy.Services.FrontPortal.BusinessLogic.Core.HostedServices;
 using Gitloy.Services.FrontPortal.BusinessLogic.Persistence.EntityFrameworkCore;
 using Gitloy.Services.FrontPortal.Controllers;
 using Microsoft.AspNetCore.Builder;
@@ -66,6 +67,7 @@ namespace Gitloy.Services.FrontPortal
         private void SetupBusCommunication(IServiceCollection services)
         {
             services.AddSingleton<ICommunicator, Communicator>();
+            services.AddHostedService<IntegrationHostedService>();
         }
 
         

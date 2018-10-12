@@ -1,3 +1,5 @@
+@using Gitloy.BuildingBlocks.Messages.IntegrationEvents
+@using Microsoft.CodeAnalysis.Classification
 @model DeploymentDetailsViewModel
 
 @{
@@ -57,13 +59,31 @@
     
                                 @foreach (var log in Model.Logs)
                                 {
-                                    <tr>
+                                    string style = "";
+                                    switch (log.Status)
+                                    {
+                                        case ResultStatus.Unknown:
+                                            style = "";
+                                            break;
+                                        case ResultStatus.Successful:
+                                            style = "";
+                                            break;
+                                        case ResultStatus.Failed:
+                                            style = "danger";
+                                            break;
+                                    }
+                                    <tr class="@style">
                                         <td>@log.Guid</td>
                                         <td>@log.DateTime</td>
                                         <td>@log.Type</td>
                                         <td>@log.Status</td>
-                                        <td>@log.Description</td>
-                                        <td><button class="btn btn-primary btn-xs" data-title="Edit" data-toggle="modal" data-target="#modal-@log.Guid">View output</button></td>
+                                        <td>@log.ResultMessage</td>
+                                        <td>
+                                            @if (log.ResultMessage != String.Empty)
+                                            {
+                                                <button class="btn btn-primary btn-xs" data-title="Edit" data-toggle="modal" data-target="#modal-@log.Guid">View output</button>
+                                            }
+                                        </td>
                                     </tr>
                                 }
     
@@ -78,8 +98,13 @@
     
     @foreach (var log in Model.Logs)
     {
+        if (log.ResultMessage == string.Empty)
+        {
+            continue;
+        }
+        
         <div class="modal fade" id="modal-@log.Guid" tabindex="-1" role="dialog">
-            <div class="modal-dialog" role="document">
+            <div class="modal-dialog modal-lg" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
                         <button type="button" class="close" data-dismiss="modal" aria-hidden="true"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span></button>
@@ -87,9 +112,9 @@
                     </div>
                     <div class="modal-body">
                         <p>
-                            <samp>
-                                @log.ResultMessage
-                            </samp>
+                            <samp><pre>
+                                @log.Description
+                            </pre></samp>
                         </p>
                     </div>
                     <!-- /.modal-content --> 

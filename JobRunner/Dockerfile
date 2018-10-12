@@ -9,7 +9,7 @@ RUN dotnet build JobRunner.csproj -c Release -o /app
 
 FROM build AS publish
 RUN dotnet publish JobRunner.csproj -c Release -o /app
-COPY JobRunner/Resources /app
+#COPY JobRunner/Resources /app
 
 FROM microsoft/dotnet:2.1-runtime-bionic AS runtime
 WORKDIR /app
