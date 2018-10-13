@@ -1,7 +1,6 @@
 ﻿@{
     ViewData["Title"] = "Docs";
 }
-<h2>@ViewData["Title"]</h2>
-<h3>@ViewData["Message"]</h3>
 
-<p>Use this area to provide additional information.</p>
+@await Html.PartialAsync("_HeaderJumbotronPartial", new HeaderJumbotronPartialModel("Docs", "Everything you should know " +
+                                                                                            "how to use Gitloy"))

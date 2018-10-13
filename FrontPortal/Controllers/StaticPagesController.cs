@@ -30,21 +30,9 @@ namespace Gitloy.Services.FrontPortal.Controllers
         [Route("/Docs")]
         public IActionResult Docs()
         {
-            ViewData["Message"] = "Your documentation page.";
-
             return View();
         }
 
-        [HttpGet]
-        [Route("/About")]
-        public IActionResult About()
-        {
-            ViewData["Message"] = "Your about page.";
-
-            return View();
-        }
-
-        
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {
