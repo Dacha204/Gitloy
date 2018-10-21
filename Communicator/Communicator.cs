@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -52,7 +52,7 @@ namespace Gitloy.Services.Common.Communicator
             _bus?.Dispose();
             Bus = RabbitHutch.CreateBus(BuildConnectionString());
 
-            if (!Bus.IsConnected)
+            if (!IsConnected)
             {
                 _bus?.Dispose();
                 throw new Exception($"Failed to build communicator. No connection to broker.");
