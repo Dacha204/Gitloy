@@ -3,7 +3,7 @@ using System.Reflection;
 
 namespace Gitloy.Services.Common.Communicator
 {
-    internal class EasyNetQConfig
+    public class EasyNetQOptions
     {
         public string Host { get; set; }
         public string VirtualHost { get; set; }
@@ -17,12 +17,12 @@ namespace Gitloy.Services.Common.Communicator
         public string Platform { get; set; }
         public int Timeout { get; set; }
 
-        public EasyNetQConfig()
+        public EasyNetQOptions()
         {
-            Host = "localhost";
+            Host = "default.host";
             VirtualHost = "/";
-            Username = "admin";
-            Password = "password";
+            Username = "default.username";
+            Password = "default.password";
             RequestedHeartbeat = 10;
             PrefetchCount = 50;
             PublisherConfirms = false;

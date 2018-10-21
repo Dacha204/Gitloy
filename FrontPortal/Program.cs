@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Configuration;
 
 namespace Gitloy.Services.FrontPortal
 {
@@ -12,6 +13,10 @@ namespace Gitloy.Services.FrontPortal
 
         public static IWebHostBuilder CreateWebHostBuilder(string[] args) =>
             WebHost.CreateDefaultBuilder(args)
+                .ConfigureAppConfiguration((hostingContext, config) =>
+                    {
+                        config.AddEnvironmentVariables(prefix: "GITLOY_");
+                    })
                 .UseStartup<Startup>();
     }
 }

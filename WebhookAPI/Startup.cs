@@ -44,7 +44,7 @@ namespace Gitloy.Services.WebhookAPI
 
         private void SetupBusCommunication(IServiceCollection services)
         {
-            services.AddSingleton<ICommunicator, Communicator>();
+            services.AddCommunicator(Configuration);
             services.AddHostedService<IntegrationHostedService>();
         }
 
@@ -68,6 +68,12 @@ namespace Gitloy.Services.WebhookAPI
             }
  
             app.UseMvc();
+            
+            using (var serviceScope = app.ApplicationServices.GetService<IServiceScopeFactory>().CreateScope())
+            {
+                var context = serviceScope.ServiceProvider.GetRequiredService<WebhookApiContext>();
+                context.Database.Migrate();
+            }
         }
     }
 }

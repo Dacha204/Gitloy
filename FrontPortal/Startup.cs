@@ -62,11 +62,11 @@ namespace Gitloy.Services.FrontPortal
             
             services.AddScoped<IUnitOfWork, UnitOfWork>();
         }
-        
+
         
         private void SetupBusCommunication(IServiceCollection services)
         {
-            services.AddSingleton<ICommunicator, Communicator>();
+            services.AddCommunicator(Configuration);
             services.AddHostedService<IntegrationHostedService>();
         }
 
@@ -98,7 +98,12 @@ namespace Gitloy.Services.FrontPortal
             app.UseAuthentication();
 
             app.UseMvcWithDefaultRoute();
-
+            
+            using (var serviceScope = app.ApplicationServices.GetService<IServiceScopeFactory>().CreateScope())
+            {
+                var context = serviceScope.ServiceProvider.GetRequiredService<FrontPortalDbContext>();
+                context.Database.Migrate();
+            }
         }
     }
 }

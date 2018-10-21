@@ -1,14 +1,71 @@
 version: '3.4'
 
 services:
+  
+  rabbitmq:
+    image: rabbitmq:3.7.8-management-alpine
+    container_name: gitloy.rabbitmq
+    hostname: gitloy.rabbitmq
+    networks:
+      - gitloy.net
+    environment:
+      RABBITMQ_DEFAULT_USER: "gitloy"
+      RABBITMQ_DEFAULT_PASS: "P@ssword123!"
+    ports:
+      - 15672:15672
+  
+  db:
+    image: microsoft/mssql-server-linux:2017-latest
+    container_name: gitloy.db
+    networks:
+      - gitloy.net
+    environment:
+      ACCEPT_EULA: "Y"
+      SA_PASSWORD: "P@ssword123!"
+    ports:
+      - "1433:1433"
+    
+  worker:
+    image: gitloy/worker
+    container_name: gitloy.worker
+    networks:
+      - gitloy.net
+    depends_on:
+      - rabbitmq
+    environment:
+      ASPNETCORE_ENVIRONMENT: "Development"
+    build:
+      context: .
+      dockerfile: JobRunner/Dockerfile
+    
   webhookapi:
-    image: ${DOCKER_REGISTRY}webhookapi
+    image: gitloy/webhookapi
+    container_name: gitloy.webhook
     build:
       context: .
       dockerfile: WebhookAPI/Dockerfile
-
+    networks:
+      - gitloy.net
+    depends_on:
+      - db
+      - rabbitmq
+      - worker
+    ports:
+      - "4444:80"
+      
   webportal:
-    image: ${DOCKER_REGISTRY}webportal
+    image: gitloy/webportal
+    container_name: gitloy.webportal
     build:
       context: .
-      dockerfile: WebPortal/Dockerfile
+      dockerfile: FrontPortal/Dockerfile
+    networks:
+      - gitloy.net
+    depends_on:
+      - db
+      - rabbitmq
+    ports:
+      - "8080:80"
+      
+networks:
+  gitloy.net:
