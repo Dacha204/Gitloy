@@ -189,6 +189,7 @@ function run {
 
     #LOADBALANCER/REVERSEPROXY
     echo "GITLOY: Running $loadbalancer_c"
+    mkdir -p ~/.caddy
     docker run -dit \
     --name $loadbalancer_c \
     --network $network \
@@ -196,7 +197,7 @@ function run {
     -p 443:443 \
     -p 2015:2015 \
     -v $(pwd)/Caddyfile:/etc/Caddyfile \
-    -v $loadbalancer_v:/root/.caddy \
+    -v $HOME/.caddy:/root/.caddy \
     $loadbalancer_i
 }
 
