@@ -98,12 +98,6 @@ namespace Gitloy.Services.FrontPortal
             app.UseAuthentication();
 
             app.UseMvcWithDefaultRoute();
-            
-            using (var serviceScope = app.ApplicationServices.GetService<IServiceScopeFactory>().CreateScope())
-            {
-                var context = serviceScope.ServiceProvider.GetRequiredService<FrontPortalDbContext>();
-                context.Database.Migrate();
-            }
         }
     }
 }
