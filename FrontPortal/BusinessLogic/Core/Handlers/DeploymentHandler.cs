@@ -181,13 +181,16 @@ namespace Gitloy.Services.FrontPortal.BusinessLogic.Core.Handlers
             string repo = urlParts[4].Replace(".git", "");
             string createWebhookUrl = $"https://github.com/{user}/{repo}/settings/hooks/new";
 
+            string domain = _configuration["GitloyServices:WebhookAPI:Domain"];
+            string url = _configuration["GitloyServices:WebhookAPI:HookRoute"];
+            
             return new WebhookParamsViewModel()
             {
                 DeploymentGuid = deployment.Guid,
                 CreateWebhookURL = createWebhookUrl,
                 Secret = string.Empty,
                 ContentType = "application/json",
-                PayloadURL = _configuration["GitloyServices:WebhookAPI:URL"]
+                PayloadURL = $"https://{domain}{url}"
             };
         }
         

@@ -1,5 +1,4 @@
-﻿using System;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Gitloy.Services.Common.Communicator;
 using Gitloy.Services.JobRunner.HostedServices;
 using Microsoft.Extensions.Configuration;
@@ -26,16 +25,18 @@ namespace Gitloy.Services.JobRunner
             ConfigureApp(host);
             ConfigureServices(host);
 
-            return host.Build();
+            return host
+                .Build();
         }
 
         private static void ConfigureApp(IHostBuilder app)
         {
             app.ConfigureAppConfiguration((hostContext, config) =>
             {
+                config.AddEnvironmentVariables();
+                config.AddEnvironmentVariables(prefix: "GITLOY_");
                 config.AddJsonFile("appsettings.json", optional: true);
-                config.AddJsonFile($"appsettings.{hostContext.HostingEnvironment.EnvironmentName}.json",
-                    optional: true);
+                config.AddJsonFile($"appsettings.{hostContext.HostingEnvironment.EnvironmentName}.json", optional: true);
             });
 
             app.ConfigureLogging((hostContext, config) =>
@@ -51,8 +52,8 @@ namespace Gitloy.Services.JobRunner
             app.ConfigureServices((hostContext, services) =>
             {
                 services.AddLogging();
+                services.AddCommunicator(hostContext.Configuration);
                 services.AddHostedService<JobRunnerHostedService>();
-                services.AddSingleton<ICommunicator, Communicator>();
             });
         }
     }

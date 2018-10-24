@@ -6,13 +6,14 @@ using System.Reflection.Metadata;
 using EasyNetQ;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 
 namespace Gitloy.Services.Common.Communicator
 {
     public class Communicator : ICommunicator
     {
-        public static string ConfigSection { get; set; } = "RabbitMQ";
-
+        private readonly IOptions<EasyNetQOptions> _options;
+        
         private IBus _bus;
         public IBus Bus
         {
@@ -33,10 +34,11 @@ namespace Gitloy.Services.Common.Communicator
         private readonly IConfiguration _config;
         private readonly ILogger<Communicator> _logger;
         
-        public Communicator(IConfiguration config, ILogger<Communicator> logger)
+        public Communicator(IConfiguration config, ILogger<Communicator> logger, IOptions<EasyNetQOptions> options)
         {
             _config = config;
             _logger = logger;
+            _options = options;
         }
         
         public void Connect()
@@ -47,14 +49,14 @@ namespace Gitloy.Services.Common.Communicator
                 return;
             }
             
-            ValidateConfig();
-            
             _bus?.Dispose();
-            Bus = RabbitHutch.CreateBus(BuildConnectionString());
+            var connectionString = BuildConnectionString();
+            Bus = RabbitHutch.CreateBus(connectionString);
 
-            if (!Bus.IsConnected)
+            if (!IsConnected)
             {
                 _bus?.Dispose();
+                _logger.LogDebug($"Failed to build communicator. No connection. Connection string: {connectionString}");
                 throw new Exception($"Failed to build communicator. No connection to broker.");
             }
             
@@ -73,18 +75,11 @@ namespace Gitloy.Services.Common.Communicator
             _bus = null;
         }
 
-        private void ValidateConfig()
-        {
-            if (!_config.GetSection(ConfigSection).Exists())
-                throw new ArgumentException($"[Communicator] Config section '{ConfigSection}' " +
-                                            $"containing EasyNetQ connection parameters not found.");
-        }
-
         private string BuildConnectionString()
         {
             string connectionString = string.Empty;
-            
-            var easyNetQConfig = _config.GetSection(ConfigSection).Get<EasyNetQConfig>();
+
+            var easyNetQConfig = _options.Value;
             
             foreach (var property in easyNetQConfig.GetType().GetProperties())
             {
