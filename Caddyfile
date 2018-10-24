@@ -1,0 +1,5 @@
+gitloy.dev.com
+{
+    proxy / gitloy.portal
+    proxy /api gitloy.webhook
+}

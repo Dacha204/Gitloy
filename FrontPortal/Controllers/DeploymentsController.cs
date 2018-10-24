@@ -39,7 +39,7 @@ namespace Gitloy.Services.FrontPortal.Controllers
             }
             catch (Exception ex)
             {
-                throw;
+//                throw;
                 return View("Error", new ErrorViewModel() {Exception = ex});
             }
         }
@@ -75,7 +75,7 @@ namespace Gitloy.Services.FrontPortal.Controllers
             }
             catch (Exception ex)
             {
-                throw;
+//                throw;
                 return View("Error", new ErrorViewModel() {Exception = ex});
             }
         }
@@ -93,7 +93,7 @@ namespace Gitloy.Services.FrontPortal.Controllers
             }
             catch (Exception ex)
             {
-                throw;
+//                throw;
                 return View("Error", new ErrorViewModel() {Exception = ex});
             }
         }
@@ -109,7 +109,7 @@ namespace Gitloy.Services.FrontPortal.Controllers
             }
             catch (Exception ex)
             {
-                throw;
+//                throw;
                 return View("Error", new ErrorViewModel() {Exception = ex});
             }
         }

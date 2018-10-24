@@ -1,71 +1,84 @@
-version: '3.4'
+# version: '3.4'
 
-services:
-  
-  rabbitmq:
-    image: rabbitmq:3.7.8-management-alpine
-    container_name: gitloy.rabbitmq
-    hostname: gitloy.rabbitmq
-    networks:
-      - gitloy.net
-    environment:
-      RABBITMQ_DEFAULT_USER: "gitloy"
-      RABBITMQ_DEFAULT_PASS: "P@ssword123!"
-    ports:
-      - 15672:15672
-  
-  db:
-    image: microsoft/mssql-server-linux:2017-latest
-    container_name: gitloy.db
-    networks:
-      - gitloy.net
-    environment:
-      ACCEPT_EULA: "Y"
-      SA_PASSWORD: "P@ssword123!"
-    ports:
-      - "1433:1433"
+# services:
+#   rabbitmq:
+#     image: rabbitmq:3.7.8-management-alpine
+#     container_name: gitloy.rabbitmq
+#     hostname: gitloy.rabbitmq
+#     networks:
+#       - gitloy.net
+#     ports:
+#       - 15672:15672
+#     environment:
+#       RABBITMQ_DEFAULT_USER: "gitloy"
+#       RABBITMQ_DEFAULT_PASS: "P@ssword123!"
+#     deploy:
+#       restart_policy: 
+#         condition: on-failure
     
-  worker:
-    image: gitloy/worker
-    container_name: gitloy.worker
-    networks:
-      - gitloy.net
-    depends_on:
-      - rabbitmq
-    environment:
-      ASPNETCORE_ENVIRONMENT: "Development"
-    build:
-      context: .
-      dockerfile: JobRunner/Dockerfile
+#   db:
+#     image: microsoft/mssql-server-linux:2017-latest
+#     container_name: gitloy.db
+#     networks:
+#       - gitloy.net
+#     environment:
+#       ACCEPT_EULA: "Y"
+#       SA_PASSWORD: "P@ssword123!"
+#     ports:
+#       - "1433:1433"
+#     deploy:
+#       restart_policy: 
+#         condition: on-failure
     
-  webhookapi:
-    image: gitloy/webhookapi
-    container_name: gitloy.webhook
-    build:
-      context: .
-      dockerfile: WebhookAPI/Dockerfile
-    networks:
-      - gitloy.net
-    depends_on:
-      - db
-      - rabbitmq
-      - worker
-    ports:
-      - "4444:80"
+#   worker:
+#     image: gitloy/worker
+#     container_name: gitloy.worker
+#     networks:
+#       - gitloy.net
+#     environment:
+#       - ASPNETCORE_ENVIRONMENT=Development
+#       - ASPNETCORE_URLS=https://+:443;http://+:80
+#     build:
+#       context: .
+#       dockerfile: JobRunner/Dockerfile
+#     deploy:
+#       replicas: 4
+#       restart_policy: 
+#         condition: on-failure
+#     depends_on:
+#       - rabbitmq
+
+#   # webhookapi:
+#   #   image: gitloy/webhookapi
+#   #   container_name: gitloy.webhook
+#   #   networks:
+#   #     - gitloy.net
+#   #   environment: 
+#   #     - ASPNETCORE_ENVIRONMENT=Development
+#   #     - ASPNETCORE_URLS=https://+:443;http://+:80
+#   #   build:
+#   #     context: .
+#   #     dockerfile: WebhookAPI/Dockerfile
+#   #   deploy:
+#   #     restart: on-failure
+#   #   depends_on:
+#   #     - db
+#   #     - rabbitmq
+#   #     - worker
       
-  webportal:
-    image: gitloy/webportal
-    container_name: gitloy.webportal
-    build:
-      context: .
-      dockerfile: FrontPortal/Dockerfile
-    networks:
-      - gitloy.net
-    depends_on:
-      - db
-      - rabbitmq
-    ports:
-      - "8080:80"
+#   # webportal:
+#   #   image: gitloy/webportal
+#   #   container_name: gitloy.webportal
+#   #   networks:
+#   #     - gitloy.net
+#   #   build:
+#   #     context: .
+#   #     dockerfile: FrontPortal/Dockerfile
+#   #   deploy:
+#   #     restart: on-failure
+#   #   depends_on:
+#   #     - db
+#   #     - rabbitmq
       
-networks:
-  gitloy.net:
+# networks:
+#   gitloy.net:
