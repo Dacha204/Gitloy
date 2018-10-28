@@ -6,7 +6,7 @@
 
 domain="localhost"
 network="gitloy.net"
-wait_for_broker=5s
+wait_for_broker=10s
 wait_for_db=5s
 
 broker_i="rabbitmq:3.7.8-management-alpine"
@@ -200,6 +200,8 @@ function run {
     -v $(pwd)/Caddyfile:/etc/Caddyfile \
     -v $HOME/.caddy:/root/.caddy \
     $loadbalancer_i
+    
+    docker ps -a -f name=gitloy
 }
 
 ########################################################################
