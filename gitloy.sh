@@ -175,6 +175,7 @@ function run {
     --name $portal_c \
     --network $network \
     -e "ASPNETCORE_ENVIRONMENT=Docker" \
+    -e "GITLOY_GitloyServices__WebhookAPI__Domain=$domain"
     -p 20480:80 \
     $portal_i
 

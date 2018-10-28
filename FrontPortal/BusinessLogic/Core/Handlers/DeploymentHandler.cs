@@ -1,50 +1,36 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.InteropServices.WindowsRuntime;
 using System.Security.Claims;
 using Gitloy.BuildingBlocks.Messages.IntegrationEvents;
 using Gitloy.Services.Common.Communicator;
 using Gitloy.Services.FrontPortal.BusinessLogic.Core.Model;
-using Gitloy.Services.FrontPortal.Controllers;
 using Gitloy.Services.FrontPortal.ViewModels;
 using Gitloy.Services.FrontPortal.ViewModels.Deployment;
-using Gitloy.Services.FrontPortal.ViewModels.DeploymentLog;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 
 namespace Gitloy.Services.FrontPortal.BusinessLogic.Core.Handlers
 {
-    public interface IDeploymentHandler
-    {
-        IList<DeploymentViewModel> ListAll(ClaimsPrincipal user);
-        DeploymentDetailsViewModel GetDetails(Guid deploymentGuid);
-        Deployment CreateDeployment(DeploymentCreateViewModel deployment, ClaimsPrincipal user);
-        DeploymentViewModel ViewDeployment(Guid deploymentGuid);
-        void UpdateDeployment(DeploymentViewModel deployment);
-        void DeleteDeployment(Guid deploymentGuid);
-        WebhookParamsViewModel GenerateWebhookParams(Deployment deployment);
-    }
-    
     public class DeploymentHandler : IDeploymentHandler
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly UserManager<IdentityUser> _userManager;
         private readonly ILogger<DeploymentHandler> _logger;
-        private readonly IConfiguration _configuration;
+        private readonly WebhookAPIOptions _webhookOptions;
         private readonly ICommunicator _communicator;
 
         public DeploymentHandler(IUnitOfWork unitOfWork, 
             UserManager<IdentityUser> userManager,
             ILogger<DeploymentHandler> logger,
-            IConfiguration configuration,
+            IOptions<WebhookAPIOptions> webhookOptions,
             ICommunicator communicator)
         {
             _unitOfWork = unitOfWork;
             _userManager = userManager;
             _logger = logger;
-            _configuration = configuration;
+            _webhookOptions = webhookOptions.Value;
             _communicator = communicator;
         }
 
@@ -114,7 +100,7 @@ namespace Gitloy.Services.FrontPortal.BusinessLogic.Core.Handlers
         public void UpdateDeployment(DeploymentViewModel deployment)
         {
             var dep = _unitOfWork.Deployments.Get(deployment.Guid) ??
-                      throw new Exception($"Deployment with guid: {deployment.Guid} not found");;
+                      throw new Exception($"Deployment with guid: {deployment.Guid} not found");
 
             CheckEditConflicts(deployment);
             
@@ -177,20 +163,24 @@ namespace Gitloy.Services.FrontPortal.BusinessLogic.Core.Handlers
         public WebhookParamsViewModel GenerateWebhookParams(Deployment deployment)
         {
             var urlParts = deployment.GitUrl.Split("/");
+            if (urlParts.Length < 5)
+            {
+                var errorMessage = $"{deployment.GitUrl} is not a valid git url.";
+                _logger.LogError(errorMessage);
+                throw new Exception(errorMessage);
+            }
+            
             string user = urlParts[3];
             string repo = urlParts[4].Replace(".git", "");
             string createWebhookUrl = $"https://github.com/{user}/{repo}/settings/hooks/new";
-
-            string domain = _configuration["GitloyServices:WebhookAPI:Domain"];
-            string url = _configuration["GitloyServices:WebhookAPI:HookRoute"];
-            
+           
             return new WebhookParamsViewModel()
             {
                 DeploymentGuid = deployment.Guid,
                 CreateWebhookURL = createWebhookUrl,
                 Secret = string.Empty,
                 ContentType = "application/json",
-                PayloadURL = $"https://{domain}{url}"
+                PayloadURL = $"https://{_webhookOptions.Domain}{_webhookOptions.HookRoute}"
             };
         }
         
