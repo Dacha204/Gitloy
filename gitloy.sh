@@ -6,8 +6,8 @@
 
 domain="localhost"
 network="gitloy.net"
-wait_for_broker=10s
-wait_for_db=5s
+wait_for_broker=15s
+wait_for_db=15s
 
 broker_i="rabbitmq:3.7.8-management-alpine"
 broker_c="gitloy.rabbitmq"
