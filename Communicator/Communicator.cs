@@ -31,12 +31,10 @@ namespace Gitloy.Services.Common.Communicator
         }
 
         public bool IsConnected => (_bus != null && _bus.IsConnected);
-        private readonly IConfiguration _config;
         private readonly ILogger<Communicator> _logger;
         
-        public Communicator(IConfiguration config, ILogger<Communicator> logger, IOptions<EasyNetQOptions> options)
+        public Communicator(ILogger<Communicator> logger, IOptions<EasyNetQOptions> options)
         {
-            _config = config;
             _logger = logger;
             _options = options;
         }

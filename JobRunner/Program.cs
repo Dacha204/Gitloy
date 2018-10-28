@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.IO;
+using System.Threading.Tasks;
 using Gitloy.Services.Common.Communicator;
 using Gitloy.Services.JobRunner.HostedServices;
 using Microsoft.Extensions.Configuration;
@@ -33,10 +34,13 @@ namespace Gitloy.Services.JobRunner
         {
             app.ConfigureAppConfiguration((hostContext, config) =>
             {
+                config.SetBasePath(Directory.GetCurrentDirectory());
                 config.AddEnvironmentVariables();
                 config.AddEnvironmentVariables(prefix: "GITLOY_");
                 config.AddJsonFile("appsettings.json", optional: true);
                 config.AddJsonFile($"appsettings.{hostContext.HostingEnvironment.EnvironmentName}.json", optional: true);
+                config.AddJsonFile($"appsettings.Docker.json", optional: true);
+                config.AddJsonFile($"appsettings.Development.json", optional: true);
             });
 
             app.ConfigureLogging((hostContext, config) =>
@@ -54,6 +58,7 @@ namespace Gitloy.Services.JobRunner
                 services.AddLogging();
                 services.AddCommunicator(hostContext.Configuration);
                 services.AddHostedService<JobRunnerHostedService>();
+                services.Configure<EasyNetQOptions>(hostContext.Configuration.GetSection("EasyNetQ"));
             });
         }
     }

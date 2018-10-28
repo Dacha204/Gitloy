@@ -6,8 +6,8 @@
 
 domain="localhost"
 network="gitloy.net"
-wait_for_broker=5s
-wait_for_db=5s
+wait_for_broker=15s
+wait_for_db=15s
 
 broker_i="rabbitmq:3.7.8-management-alpine"
 broker_c="gitloy.rabbitmq"
@@ -175,6 +175,7 @@ function run {
     --name $portal_c \
     --network $network \
     -e "ASPNETCORE_ENVIRONMENT=Docker" \
+    -e "GITLOY_GitloyServices__WebhookAPI__Domain=$domain" \
     -p 20480:80 \
     $portal_i
 
@@ -199,6 +200,8 @@ function run {
     -v $(pwd)/Caddyfile:/etc/Caddyfile \
     -v $HOME/.caddy:/root/.caddy \
     $loadbalancer_i
+    
+    docker ps -a -f name=gitloy
 }
 
 ########################################################################
@@ -236,12 +239,12 @@ function build {
 ########################################################################
 
 function print_usage {
-    echo "GITLOY: Usage: $0 build                   =   builds required images"
-    echo "GITLOY:        $0 install <domain-name>   =   build and run gitloy environment"
-    echo "GITLOY:        $0 uninstall               =   stops & removes all resource that gitloy creates"
-    echo "GITLOY:        $0 run                     =   runs containers"
-    echo "GITLOY:        $0 stop                    =   stops and removes containers"
-    echo "GITLOY:        $0 domain <domain-name>    =   update domain after install"
+    echo "Usage:  $0 build                   =   builds required images"
+    echo "        $0 install <domain-name>   =   build and run gitloy environment"
+    echo "        $0 uninstall               =   stops & removes all resource that gitloy creates"
+    echo "        $0 run                     =   runs containers"
+    echo "        $0 stop                    =   stops and removes containers"
+    echo "        $0 domain <domain-name>    =   update domain after install"
 }
 
 

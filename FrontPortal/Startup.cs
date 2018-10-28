@@ -74,6 +74,7 @@ namespace Gitloy.Services.FrontPortal
         private void SetupBusinessLogic(IServiceCollection services)
         {
             services.AddScoped<IDeploymentHandler, DeploymentHandler>();
+            services.Configure<WebhookAPIOptions>(Configuration.GetSection("GitloyServices:WebhookAPI"));
         }
 
         
