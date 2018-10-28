@@ -237,12 +237,12 @@ function build {
 ########################################################################
 
 function print_usage {
-    echo "GITLOY: Usage: $0 build                   =   builds required images"
-    echo "GITLOY:        $0 install <domain-name>   =   build and run gitloy environment"
-    echo "GITLOY:        $0 uninstall               =   stops & removes all resource that gitloy creates"
-    echo "GITLOY:        $0 run                     =   runs containers"
-    echo "GITLOY:        $0 stop                    =   stops and removes containers"
-    echo "GITLOY:        $0 domain <domain-name>    =   update domain after install"
+    echo "Usage:  $0 build                   =   builds required images"
+    echo "        $0 install <domain-name>   =   build and run gitloy environment"
+    echo "        $0 uninstall               =   stops & removes all resource that gitloy creates"
+    echo "        $0 run                     =   runs containers"
+    echo "        $0 stop                    =   stops and removes containers"
+    echo "        $0 domain <domain-name>    =   update domain after install"
 }
 
 
